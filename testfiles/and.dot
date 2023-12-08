@@ -1,0 +1,8 @@
+digraph test {
+    I1 [label = "INPUT A"];
+    I2 [label = "INPUT B"];
+    GATE [label = "AND2" shape=box];
+    O [label = "OUTPUT"];
+    I1 -> GATE -> O;
+    I2 -> GATE;
+}
