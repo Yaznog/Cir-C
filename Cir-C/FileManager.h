@@ -19,5 +19,4 @@ void extractFile(const string& inputFilePath, string& outputString) {
     else cout << "Unable to open file";    
 }
 
-
 #endif

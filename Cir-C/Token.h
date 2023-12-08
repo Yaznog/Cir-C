@@ -16,7 +16,7 @@ public:
         this.line = inputLine;
     }*/
 
-    Token(const string& inputType, const string& inputValue, unsigned int inputLine) : m_type(inputType), m_value(inputValue), m_line(inputLine) {};
+    Token(const string& inputType = "void", const string& inputValue = "void", unsigned int inputLine = 0) : m_type(inputType), m_value(inputValue), m_line(inputLine) {};
 
     
     static string getStringType(const string& inputString) {
@@ -31,7 +31,7 @@ public:
 
     inline void setType(string inputType) { this->m_type = inputType; };
     inline void setValue(string inputValue) { this->m_value = inputValue; };
-    inline void setLine(int inputLine) { this->m_line = inputLine; };
+    inline void setLine(unsigned int inputLine) { this->m_line = inputLine; };
 
 private:
 

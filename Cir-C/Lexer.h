@@ -11,7 +11,7 @@ using namespace std;
 
 // identifier	| x, color, UP
 // keyword		| if, while, return
-// separator	| {, (, ;
+// separator	| {, [, (, ;
 // operator		| +, =, <
 // literal      | true, 0.15, "music"
 // comment      | //comment
@@ -69,13 +69,51 @@ int lexingInputStringJSON(const string& inputString, list<string>& splittedEleme
 	return 0;
 }*/
 
+string getStringType(const string& inputString) {
 
-int lexingInputStringJSON(const string& inputString, list<Token>& splittedElementTab) {
-    string input = inputString;
+    return "NIY";
+}
+
+
+int lexingInputStringJSON(const string& inputString, list<Token>& listToken) {
+    string currentString = "";
+    Token currentToken;
+    unsigned int lineNumber = 1;
+
+    for (int index = 0; index < inputString.length(); index++) {
+
+        switch (inputString[index])
+        {
+        case '\n':
+            lineNumber++;
+            break;
+
+        case '{':
+            /*
+            currentToken.setType(getStringType(currentString));
+            currentToken.setValue(currentString);
+            currentToken.setLine(lineNumber);*/
+
+            currentToken = Token(getStringType(currentString), currentString, lineNumber);
+            listToken.push_back(currentToken);
+
+            currentString = inputString[index];
+            currentToken = Token(getStringType(currentString), currentString, lineNumber);
+            listToken.push_back(currentToken);
+
+            break;
+
+        default:
+            currentString += inputString[index];
+            break;
+        }
+    }
+
+       
+
 
     //addSpaceAroundSpecialChar(input);
-    separateStringBySeparator(" ", input, splittedElementTab);
-
+    //separateStringBySeparator(" ", input, splittedElementTab);
 
     return 0;
 }
