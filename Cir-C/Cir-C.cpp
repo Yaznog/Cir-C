@@ -74,6 +74,8 @@ int main(int argc, char* argv[])
         /// Beginning of the program --------------------------------------------------------------
     printInConsoleStartUpMessage();
 
+    printDevMessage("devCharlo branch");
+
     if (inputArgumentParser(argc, argv)) {
         cout << "Error with input argument(s)" << endl;
     }
@@ -89,6 +91,7 @@ int main(int argc, char* argv[])
     string extractedFileDOT = "";
     extractFile(inputFilePathDOT, extractedFileDOT);
     printInConsoleFileDOT(extractedFileDOT);
+
     /*
         /// Lexer processing ----------------------------------------------------------------------
     
