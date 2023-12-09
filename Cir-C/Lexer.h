@@ -2,6 +2,7 @@
 #define LEXER_H
 
 #include "Token.h"
+#include "MessageManager.h"
 
 #include <iostream>
 #include <string>
@@ -16,17 +17,6 @@ using namespace std;
 // literal      | true, 0.15, "music"
 // comment      | //comment
 
-/*
-list<int> c1, c2;
-list<int>::const_iterator cIter;
-c1.push_back(10);*/
-
-/*
-void addSpaceAroundSpecialChar(string& inputString) {
-
-    for(int index = 0, )
-
-}*/
 
 void separateStringBySeparator(const string& separator, const string& inputString, list<Token>& splittedElementTab) {
     size_t pos;
@@ -58,16 +48,6 @@ void separateStringBySeparator(const string& separator, const string& inputStrin
     }
 }
 
-/*
-int lexingInputStringJSON(const string& inputString, list<string>& splittedElementTab, list<string>& tokenTab) {
-    string input = inputString;
-
-    //addSpaceAroundSpecialChar(input);
-	separateStringBySeparator(" ", input, splittedElementTab, tokenTab);
-
-
-	return 0;
-}*/
 
 string getStringType(const string& inputString) {
 
@@ -75,145 +55,107 @@ string getStringType(const string& inputString) {
 }
 
 
-int lexingInputStringJSON(const string& inputString, list<Token>& listToken) {
+/*
+void cleanSplitString(string& inputString) {
+    int startIndex;
+    int endIndex;
+
+    for (startIndex = 0; startIndex < inputString.length(); startIndex++) {
+        if (inputString[startIndex] != ' ')
+            break;
+    }
+    for (endIndex = inputString.length() - 1; endIndex > 0; endIndex--) {
+        if (inputString[endIndex] != ' ')
+            break;
+    }
+    inputString = inputString.substr(startIndex, endIndex - startIndex + 1);
+}*/
+
+
+void checkStringAndAddTokenInList(string& inputString, list<Token>& listToken, unsigned int lineNumber) {
+    if (inputString != "") {
+        Token currentToken = Token(getStringType(inputString), inputString, lineNumber);
+        listToken.push_back(currentToken);
+        inputString = "";
+    }
+}
+
+
+void splitString(const string& inputString, list<Token>& listToken) {
+
     string currentString = "";
-    //string workingString = inputString;
-    Token currentToken;
     unsigned int lineNumber = 1;
 
-    int previousIndex = 0;
+    for (int index = 0; index < inputString.length(); index++) {
 
-    /*
-    while (!workingString.empty()) {
+        switch (inputString[index])
+        {
+        case '\n':
+            checkStringAndAddTokenInList(currentString, listToken, lineNumber);
+            lineNumber++;
+            break;
 
-        currentString = workingString.substr(0, index-1);
-        workingString = workingString.substr(index + 1);
-    }*/
+        case '(': case ')': case '[': case ']': case '{': case '}': case ',': case ';': case ':': case '=':
+            checkStringAndAddTokenInList(currentString, listToken, lineNumber);
+            currentString = inputString[index];
+            checkStringAndAddTokenInList(currentString, listToken, lineNumber);
+            break;
 
-
-
-    //for (int index = 0; index < inputString.length(); index++) {
-    //bool breakWhile = false;
-    bool breakFor = false;
-
-    //while (!workingString.empty() && !breakWhile) {
-        //breakFor = false;
-
-        for (int index = 0; index < inputString.length(); index++) {
-            //currentString = workingString.substr(0, index - 1);
-            //workingString = workingString.substr(index + 1);
-
-            switch (inputString[index])
-            {
-            case '\n':
-                currentToken = Token(getStringType(currentString), currentString, lineNumber);
-                listToken.push_back(currentToken);
-                index++;
-                                
-                lineNumber++;
-                currentString = "";
-                break;
-
-            case '{':
-                currentToken = Token(getStringType(currentString), currentString, lineNumber);
-                listToken.push_back(currentToken);
-
-                currentString = inputString[index];
-                currentToken = Token(getStringType(currentString), currentString, lineNumber);
-                listToken.push_back(currentToken);
-
-                currentString = "";
-                break;
-
-            case '}':
-                currentToken = Token(getStringType(currentString), currentString, lineNumber);
-                listToken.push_back(currentToken);
-
-                currentString = inputString[index];
-                currentToken = Token(getStringType(currentString), currentString, lineNumber);
-                listToken.push_back(currentToken);
-
-                currentString = "";
-                break;
-
-            case '[':
-                currentToken = Token(getStringType(currentString), currentString, lineNumber);
-                listToken.push_back(currentToken);
-
-                currentString = inputString[index];
-                currentToken = Token(getStringType(currentString), currentString, lineNumber);
-                listToken.push_back(currentToken);
-
-                currentString = "";
-                break;
-
-            case ']':
-                currentToken = Token(getStringType(currentString), currentString, lineNumber);
-                listToken.push_back(currentToken);
-
-                currentString = inputString[index];
-                currentToken = Token(getStringType(currentString), currentString, lineNumber);
-                listToken.push_back(currentToken);
-
-                currentString = "";
-                break;
-
-            case '(':
-                currentToken = Token(getStringType(currentString), currentString, lineNumber);
-                listToken.push_back(currentToken);
-
-                currentString = inputString[index];
-                currentToken = Token(getStringType(currentString), currentString, lineNumber);
-                listToken.push_back(currentToken);
-
-                currentString = "";
-                break;
-
-            case ')':
-                currentToken = Token(getStringType(currentString), currentString, lineNumber);
-                listToken.push_back(currentToken);
-
-                currentString = inputString[index];
-                currentToken = Token(getStringType(currentString), currentString, lineNumber);
-                listToken.push_back(currentToken);
-
-                currentString = "";
-                break;
-/*
-            case '\0':
-                //currentString = inputString.substr(previousIndex);
-                //currentToken = Token(getStringType(currentString), currentString, lineNumber);
-                //listToken.push_back(currentToken);
-                //workingString = "";
-
-                breakFor = true;
-                //breakWhile = true;
-                break;*/
-
-            default:
-                currentString += inputString[index];
+        case '-':
+            checkStringAndAddTokenInList(currentString, listToken, lineNumber);
+            currentString = inputString[index];                
+            if (index < inputString.length() - 1) {
+                if (inputString[index + 1] == '>') {
+                    currentString += inputString[index + 1];
+                    checkStringAndAddTokenInList(currentString, listToken, lineNumber);
+                    index++;
+                }
+                else
+                    checkStringAndAddTokenInList(currentString, listToken, lineNumber);
                 break;
             }
+            checkStringAndAddTokenInList(currentString, listToken, lineNumber);
+            break;
 
-            if (breakFor)
-                break;
+        case '\"':
+            checkStringAndAddTokenInList(currentString, listToken, lineNumber);
+            currentString += inputString[index];                
+            for (index = index + 1; index < inputString.length(); index++) {
+                currentString += inputString[index];
+                if (inputString[index] == '\"') {
+                    break;
+                }
+            }
+            checkStringAndAddTokenInList(currentString, listToken, lineNumber);
+            break;
+
+        case '\0': case ' ':
+            checkStringAndAddTokenInList(currentString, listToken, lineNumber);
+            break;
+
+        default:
+            currentString += inputString[index];
+            break;
         }
-    //}
+    }
+}
 
-       
 
-
-    //addSpaceAroundSpecialChar(input);
-    //separateStringBySeparator(" ", input, splittedElementTab);
+int lexingInputStringJSON(const string& inputString, list<Token>& listToken) {
+    list<string> splitStringList;
+    list<unsigned int> splitStringLineList;
+    splitString(inputString, listToken);
 
     return 0;
 }
 
 
-int lexingInputStringDOT(const string& inputString, const list<string>& splittedElementTab, const list<string>& tokenTab) {
-       
-	return 0;
-}
+int lexingInputStringDOT(const string& inputString, list<Token>& listToken) {
+    list<string> splitStringList;
+    list<unsigned int> splitStringLineList;
+    splitString(inputString, listToken);
 
+    return 0;
+}
 
 #endif

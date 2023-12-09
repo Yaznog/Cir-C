@@ -1,5 +1,4 @@
-﻿#include "Cir-C.h"
-#include "FileManager.h"
+﻿#include "FileManager.h"
 #include "MessageManager.h"
 #include "Lexer.h"
 #include "Token.h"
@@ -20,12 +19,6 @@ const string listOfArgsHelp             [4] = { "-h", "-H", "--help", "--HELP" }
 
 string inputFilePathJSON = "";
 string inputFilePathDOT = "";
-
-/*
-const string listOfInputArgs[][4] = {
-    {"-i", "-I", "--input", "--INPUT"},
-    {"-h", "-H", "--help", "--HELP"}
-};*/
 
 
 int inputArgumentParser(int argc, char* argv[]) {
@@ -89,61 +82,22 @@ int main(int argc, char* argv[])
     string extractedFileDOT = "";
     extractFile(inputFilePathDOT, extractedFileDOT);
     printInConsoleFileDOT(extractedFileDOT);
-    /*
-        /// Lexer processing ----------------------------------------------------------------------
-    
-            // JSON part ------------------------------------------------------
-    //list<string> splittedElementTabJSON;
-    //list<string> tokenTabJSON;
-    //lexingInputStringJSON(extractedFileJSON, splittedElementTabJSON, tokenTabJSON);
-
-    list<Token> splittedElementTabJSON;
-    lexingInputStringJSON(extractedFileJSON, splittedElementTabJSON);
-
-    printInConsoleListString("Print splittedElementTabJSON:", splittedElementTabJSON);
-    printInConsoleListString("Print tokenTabJSON:", tokenTabJSON);*/
-
 
     /// Lexer processing ----------------------------------------------------------------------
 
-        // JSON part ------------------------------------------------------
-    //list<string> splittedElementTabJSON;
-    //list<string> tokenTabJSON;
-    //lexingInputStringJSON(extractedFileJSON, splittedElementTabJSON, tokenTabJSON);
-
-    //list<Token> listTokenJSON;
-    //lexingInputStringJSON(extractedFileJSON, listTokenJSON);
-
+    list<Token> listTokenJSON;
+    lexingInputStringJSON(extractedFileJSON, listTokenJSON);
     //printInConsoleListToken("Print listTokenJSON:", listTokenJSON);
-    //printInConsoleListString("Print tokenTabJSON:", tokenTabJSON);
-                                  
-         
-
-    Token token1;
-
-    Token token2("1", "", 0);
-    list<Token> list1;
-    list<Token> list2;
-    if (token1 == token2)
-        printDevMessage("tokens egual");
-    else
-        printDevMessage("tokens not egual");
+                                
+    list<Token> listTokenDOT;
+    lexingInputStringDOT(extractedFileDOT, listTokenDOT);
+    printInConsoleListToken("Print listTokenDOT:", listTokenDOT);
+        
 
 
 
-    /*
-    bool variable = true;
-    vector<bool> vectorOfBool;
 
-    for (int i = 0; i < 10; i++) {
-        variable = !variable;
-        vectorOfBool.push_back(variable);
-    }
-    cout << "vectorOfBool: \"";
-    for (int i = 0; i < vectorOfBool.size(); i++) {
-        cout << vectorOfBool[i] << " ; ";
-    }    
-    cout << "\"" << endl;*/
+
 
         /// End of the program --------------------------------------------------------------------
     printInConsoleStopDownpMessage();
