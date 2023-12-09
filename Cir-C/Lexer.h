@@ -9,7 +9,7 @@
 
 using namespace std;
 
-// identifier	| x, color, UP
+// symbole	    | x, color, UP
 // keyword		| if, while, return
 // separator	| {, [, (, ;
 // operator		| +, =, <
@@ -77,37 +77,128 @@ string getStringType(const string& inputString) {
 
 int lexingInputStringJSON(const string& inputString, list<Token>& listToken) {
     string currentString = "";
+    //string workingString = inputString;
     Token currentToken;
     unsigned int lineNumber = 1;
 
-    for (int index = 0; index < inputString.length(); index++) {
+    int previousIndex = 0;
 
-        switch (inputString[index])
-        {
-        case '\n':
-            lineNumber++;
-            break;
+    /*
+    while (!workingString.empty()) {
 
-        case '{':
-            /*
-            currentToken.setType(getStringType(currentString));
-            currentToken.setValue(currentString);
-            currentToken.setLine(lineNumber);*/
+        currentString = workingString.substr(0, index-1);
+        workingString = workingString.substr(index + 1);
+    }*/
 
-            currentToken = Token(getStringType(currentString), currentString, lineNumber);
-            listToken.push_back(currentToken);
 
-            currentString = inputString[index];
-            currentToken = Token(getStringType(currentString), currentString, lineNumber);
-            listToken.push_back(currentToken);
 
-            break;
+    //for (int index = 0; index < inputString.length(); index++) {
+    //bool breakWhile = false;
+    bool breakFor = false;
 
-        default:
-            currentString += inputString[index];
-            break;
+    //while (!workingString.empty() && !breakWhile) {
+        //breakFor = false;
+
+        for (int index = 0; index < inputString.length(); index++) {
+            //currentString = workingString.substr(0, index - 1);
+            //workingString = workingString.substr(index + 1);
+
+            switch (inputString[index])
+            {
+            case '\n':
+                currentToken = Token(getStringType(currentString), currentString, lineNumber);
+                listToken.push_back(currentToken);
+                index++;
+                                
+                lineNumber++;
+                currentString = "";
+                break;
+
+            case '{':
+                currentToken = Token(getStringType(currentString), currentString, lineNumber);
+                listToken.push_back(currentToken);
+
+                currentString = inputString[index];
+                currentToken = Token(getStringType(currentString), currentString, lineNumber);
+                listToken.push_back(currentToken);
+
+                currentString = "";
+                break;
+
+            case '}':
+                currentToken = Token(getStringType(currentString), currentString, lineNumber);
+                listToken.push_back(currentToken);
+
+                currentString = inputString[index];
+                currentToken = Token(getStringType(currentString), currentString, lineNumber);
+                listToken.push_back(currentToken);
+
+                currentString = "";
+                break;
+
+            case '[':
+                currentToken = Token(getStringType(currentString), currentString, lineNumber);
+                listToken.push_back(currentToken);
+
+                currentString = inputString[index];
+                currentToken = Token(getStringType(currentString), currentString, lineNumber);
+                listToken.push_back(currentToken);
+
+                currentString = "";
+                break;
+
+            case ']':
+                currentToken = Token(getStringType(currentString), currentString, lineNumber);
+                listToken.push_back(currentToken);
+
+                currentString = inputString[index];
+                currentToken = Token(getStringType(currentString), currentString, lineNumber);
+                listToken.push_back(currentToken);
+
+                currentString = "";
+                break;
+
+            case '(':
+                currentToken = Token(getStringType(currentString), currentString, lineNumber);
+                listToken.push_back(currentToken);
+
+                currentString = inputString[index];
+                currentToken = Token(getStringType(currentString), currentString, lineNumber);
+                listToken.push_back(currentToken);
+
+                currentString = "";
+                break;
+
+            case ')':
+                currentToken = Token(getStringType(currentString), currentString, lineNumber);
+                listToken.push_back(currentToken);
+
+                currentString = inputString[index];
+                currentToken = Token(getStringType(currentString), currentString, lineNumber);
+                listToken.push_back(currentToken);
+
+                currentString = "";
+                break;
+/*
+            case '\0':
+                //currentString = inputString.substr(previousIndex);
+                //currentToken = Token(getStringType(currentString), currentString, lineNumber);
+                //listToken.push_back(currentToken);
+                //workingString = "";
+
+                breakFor = true;
+                //breakWhile = true;
+                break;*/
+
+            default:
+                currentString += inputString[index];
+                break;
+            }
+
+            if (breakFor)
+                break;
         }
-    }
+    //}
 
        
 
@@ -120,9 +211,7 @@ int lexingInputStringJSON(const string& inputString, list<Token>& listToken) {
 
 
 int lexingInputStringDOT(const string& inputString, const list<string>& splittedElementTab, const list<string>& tokenTab) {
-
-
-
+       
 	return 0;
 }
 

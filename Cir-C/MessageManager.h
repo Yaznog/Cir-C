@@ -6,6 +6,7 @@
 #include <chrono>
 #include <ctime>
 #include <list>
+#include <iomanip>
 
 #include "Token.h"
 
@@ -61,7 +62,8 @@ void printInConsoleListString(const string& startMessage, const list<string>& in
 void printInConsoleListToken(const string& startMessage, const list<Token>& inputListToken) {
     cout << startMessage << endl;
     for (auto listElement : inputListToken)
-        cout << listElement.toString() << endl;
+        //cout << listElement.toString() << endl;
+        cout << left << "Value: \"" << setw(75) << (listElement.getValue() + "\"") << left << "Type: " << setw(10) << listElement.getType() << left << "Line: " << setw(5) << to_string(listElement.getLine()) << endl << "--------------------------------------------------" << endl;
 }
 
 inline void printErrorMessage(const string& inputString)    { cout << BOLD << RED       << "Error: "    << RESET << inputString << endl; }

@@ -23,7 +23,7 @@ public:
         return "nope";
     };
 
-    string toString() { return this->m_type + " " + this->m_value + " " + (char)this->m_line; };
+    string toString() { return this->m_type + " " + this->m_value + " " + to_string(this->m_line); };
 
     inline const string getType() { return this->m_type; };
     inline const string getValue() { return this->m_value; };
@@ -32,12 +32,21 @@ public:
     inline void setType(string inputType) { this->m_type = inputType; };
     inline void setValue(string inputValue) { this->m_value = inputValue; };
     inline void setLine(unsigned int inputLine) { this->m_line = inputLine; };
+    
+    bool operator==(Token& other) {
+        if (m_type == other.m_type && m_value == other.m_value && m_line == other.m_line)
+            return true;
+        else
+            return false;
+    }
 
 private:
 
     string m_type;
     string m_value;
     unsigned int m_line;
+
+    
 };
 
 #endif

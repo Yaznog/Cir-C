@@ -111,12 +111,23 @@ int main(int argc, char* argv[])
     //list<string> tokenTabJSON;
     //lexingInputStringJSON(extractedFileJSON, splittedElementTabJSON, tokenTabJSON);
 
-    list<Token> listTokenJSON;
-    lexingInputStringJSON(extractedFileJSON, listTokenJSON);
+    //list<Token> listTokenJSON;
+    //lexingInputStringJSON(extractedFileJSON, listTokenJSON);
 
-    printInConsoleListToken("Print listTokenJSON:", listTokenJSON);
+    //printInConsoleListToken("Print listTokenJSON:", listTokenJSON);
     //printInConsoleListString("Print tokenTabJSON:", tokenTabJSON);
+                                  
+         
 
+    Token token1;
+
+    Token token2("1", "", 0);
+    list<Token> list1;
+    list<Token> list2;
+    if (token1 == token2)
+        printDevMessage("tokens egual");
+    else
+        printDevMessage("tokens not egual");
 
 
 
