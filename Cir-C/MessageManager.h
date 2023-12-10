@@ -60,10 +60,11 @@ void printInConsoleListString(const string& startMessage, const list<string>& in
 
 
 void printInConsoleListToken(const string& startMessage, const list<Token>& inputListToken) {
-    cout << startMessage << endl;
+    cout << "\n" << startMessage << "\n" << endl;
     for (auto listElement : inputListToken)
         //cout << listElement.toString() << endl;
-        cout << left << "Value: \"" << setw(50) << (listElement.getValue() + "\"") << left << "Type: " << setw(10) << listElement.getType() << left << "Line: " << setw(5) << to_string(listElement.getLine()) << endl << "--------------------------------------------------" << endl;
+        cout << left << "Value: \"" << setw(35) << (listElement.getValue() + "\"") << left << "Type: " << setw(15) << listElement.getTypeString() << left << "Line: " << setw(5) << to_string(listElement.getLine()) << endl << "---------------------------------------------------------------------------" << endl;
+    cout << endl;
 }
 
 inline void printErrorMessage(const string& inputString)    { cout << BOLD << RED       << "Error: "    << RESET << inputString << endl; }

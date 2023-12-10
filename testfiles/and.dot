@@ -1,6 +1,10 @@
 digraph test {
     I1 [label = "INPUT A"];
     I2 [label = "INPUT B"];
+    //I3 [label = "INPUT C"];
+    /*I4 [label = "INPUT D"];
+    I5 [label = "INPUT E"];*/
+    #I6 [label = "INPUT E"];
     GATE [label = "AND2" shape=box];
     O [label = "OUTPUT"];
     I1 -> GATE -> O;

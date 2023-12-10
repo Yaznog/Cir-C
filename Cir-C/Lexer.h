@@ -17,13 +17,13 @@ using namespace std;
 // literal      | true, 0.15, "music"
 // comment      | //comment
 
-
+/*
 void separateStringBySeparator(const string& separator, const string& inputString, list<Token>& splittedElementTab) {
     size_t pos;
     string input = inputString;
     string subInput = "";
         
-    string currentTokenType = "";
+    tokenType currentTokenType = UNKNOWN;
     string currentTokenValue = "";
     int currentTokenLine = -1;
     Token currentToken(currentTokenType, currentTokenValue, currentTokenLine);
@@ -46,30 +46,53 @@ void separateStringBySeparator(const string& separator, const string& inputStrin
 
         splittedElementTab.push_back(currentToken);
     }
-}
-
-
-string getStringType(const string& inputString) {
-
-    return "NIY";
-}
-
-
-/*
-void cleanSplitString(string& inputString) {
-    int startIndex;
-    int endIndex;
-
-    for (startIndex = 0; startIndex < inputString.length(); startIndex++) {
-        if (inputString[startIndex] != ' ')
-            break;
-    }
-    for (endIndex = inputString.length() - 1; endIndex > 0; endIndex--) {
-        if (inputString[endIndex] != ' ')
-            break;
-    }
-    inputString = inputString.substr(startIndex, endIndex - startIndex + 1);
 }*/
+
+
+tokenType getStringType(const string& inputString) {
+
+    if (inputString.length() == 1) {
+        switch (inputString[0]) {
+        case '(':
+            return LEFTPARENTHESIS;
+        case ')': 
+            return RIGHTPARENTHESIS;
+        case '[': 
+            return LEFTSQUARE;
+        case ']': 
+            return RIGHTSQUARE;
+        case '{': 
+            return LEFTCURLY;
+        case '}': 
+            return RIGHTCURLY;
+        case ',': 
+            return COMMA;
+        case ';': 
+            return SEMICOLON;
+        case ':': 
+            return COLON;
+        case '=':
+            return EQUAL;
+        case '#':
+            return IGNORED;
+        default:
+            return SYMBOLE;
+        }
+    }
+    else if (inputString == "->")
+        return AFFECTATION;
+    else if (inputString == "//")
+        return COMMENT;
+    else if (inputString == "/*")
+        return LEFTCOMMENT;
+    else if (inputString == "*/")
+        return RIGHTCOMMENT;
+    else if (inputString[0] == '\"' && inputString[inputString.length() - 1] == '\"')
+        return TEXT;
+    else 
+        return SYMBOLE;
+    return UNKNOWN;
+}
 
 
 void checkStringAndAddTokenInList(string& inputString, list<Token>& listToken, unsigned int lineNumber) {
@@ -82,20 +105,18 @@ void checkStringAndAddTokenInList(string& inputString, list<Token>& listToken, u
 
 
 void splitString(const string& inputString, list<Token>& listToken) {
-
     string currentString = "";
     unsigned int lineNumber = 1;
 
     for (int index = 0; index < inputString.length(); index++) {
 
-        switch (inputString[index])
-        {
+        switch (inputString[index]) {
         case '\n':
             checkStringAndAddTokenInList(currentString, listToken, lineNumber);
             lineNumber++;
             break;
 
-        case '(': case ')': case '[': case ']': case '{': case '}': case ',': case ';': case ':': case '=':
+        case '(': case ')': case '[': case ']': case '{': case '}': case ',': case ';': case ':': case '=': case '#':
             checkStringAndAddTokenInList(currentString, listToken, lineNumber);
             currentString = inputString[index];
             checkStringAndAddTokenInList(currentString, listToken, lineNumber);
@@ -125,6 +146,38 @@ void splitString(const string& inputString, list<Token>& listToken) {
                 if (inputString[index] == '\"') {
                     break;
                 }
+            }
+            checkStringAndAddTokenInList(currentString, listToken, lineNumber);
+            break;
+
+        case '/':
+            checkStringAndAddTokenInList(currentString, listToken, lineNumber);
+            currentString += inputString[index];
+            if (index < inputString.length() - 1) {
+                if (inputString[index + 1] == '/' || inputString[index + 1] == '*') {
+                    currentString += inputString[index + 1];
+                    checkStringAndAddTokenInList(currentString, listToken, lineNumber);
+                    index++;
+                }
+                else
+                    checkStringAndAddTokenInList(currentString, listToken, lineNumber);
+                break;
+            }
+            checkStringAndAddTokenInList(currentString, listToken, lineNumber);
+            break;
+
+        case '*':
+            checkStringAndAddTokenInList(currentString, listToken, lineNumber);
+            currentString += inputString[index];
+            if (index < inputString.length() - 1) {
+                if (inputString[index + 1] == '/') {
+                    currentString += inputString[index + 1];
+                    checkStringAndAddTokenInList(currentString, listToken, lineNumber);
+                    index++;
+                }
+                else
+                    checkStringAndAddTokenInList(currentString, listToken, lineNumber);
+                break;
             }
             checkStringAndAddTokenInList(currentString, listToken, lineNumber);
             break;

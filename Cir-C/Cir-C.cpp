@@ -87,17 +87,12 @@ int main(int argc, char* argv[])
 
     list<Token> listTokenJSON;
     lexingInputStringJSON(extractedFileJSON, listTokenJSON);
-    //printInConsoleListToken("Print listTokenJSON:", listTokenJSON);
+    printInConsoleListToken("Print listTokenJSON:", listTokenJSON);
                                 
     list<Token> listTokenDOT;
     lexingInputStringDOT(extractedFileDOT, listTokenDOT);
     printInConsoleListToken("Print listTokenDOT:", listTokenDOT);
         
-
-
-
-
-
 
         /// End of the program --------------------------------------------------------------------
     printInConsoleStopDownpMessage();
