@@ -22,9 +22,10 @@ enum tokenType {
     AFFECTATION,        // ->
     SYMBOLE,            // other
     UNKNOWN,            // unknown
-    IGNORED,            // #
+    HASH,               // #
     LEFTCOMMENT,        // /*
-    RIGHTCOMMENT        // */
+    RIGHTCOMMENT,       // */
+    KEYWORD             // (DOT) digraph, label, shape || (JSON) signal, name, wave, data
 };
 
 
@@ -83,16 +84,25 @@ public:
         case 14:
             return "UNKNOWN";
         case 15:
-            return "IGNORED";
+            return "HASH";
         case 16:
             return "LEFTCOMMENT";
         case 17:
             return "RIGHTCOMMENT";
+        case 18:
+            return "KEYWORD";
         }
     }
     
     bool operator==(Token& other) {
         if (m_type == other.m_type && m_value == other.m_value && m_line == other.m_line)
+            return true;
+        else
+            return false;
+    }
+    
+    bool operator!=(Token& other) {
+        if (m_type != other.m_type || m_value != other.m_value || m_line != other.m_line)
             return true;
         else
             return false;

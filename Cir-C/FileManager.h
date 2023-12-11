@@ -1,6 +1,8 @@
 ﻿#ifndef FILE_MANAGER_H
 #define FILE_MANAGER_H
 
+#include "MessageManager.h"
+
 #include <iostream>
 #include <fstream>
 #include <string>
@@ -16,7 +18,7 @@ void extractFile(const string& inputFilePath, string& outputString) {
         while (getline(myfile, line)) outputString += line + "\n";
         myfile.close();
     }
-    else cout << "Unable to open file";    
+    else printErrorMessage("Unable to open file");    
 }
 
 #endif
