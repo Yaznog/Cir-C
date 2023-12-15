@@ -2,28 +2,28 @@
   "signal": [
     {
       "name": "INPUT A",
-      "wave": "l..h.x...z...l0..1.0..h.l"
+      "wave": "l..h."
     },
     {
       "name": "INPUT B",
-      "wave": "lxzxzlhxzlhxzl0.1010.hlhl"
+      "wave": "l..h."
     },
     {
       //"name": "INPUT C",
       "name": "INPUT D",
-      "wave": "lxzxzlhxzlhxzl0.1010.hlhl"
+      "wave": "l..h."
     },
     /*{
       "name": "INPUT E",
-      "wave": "lxzxzlhxzlhxzl0.1010.hlhl"
+      "wave": "l..h."
     }*/
     {
       'name': 'INPUT F',
-      'wave': 'lxzxzlhxzlhxzl0.1010.hlhl'
+      'wave': 'l..h.'
     },
     {
       name: "INPUT G",
-      wave: "lxzxzlhxzlhxzl0.1010.hlhl"
+      wave: "l..h."
     }
   ]
 }

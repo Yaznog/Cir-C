@@ -8,11 +8,12 @@
 #include <string>
 #include <list>
 #include <map>
+#include <algorithm>
 
 using namespace std;
 
-const string listOfArgsinputFilePathJSON[4] = { "-ij", "-IJ", "--inputjson", "--INPUTJSON" };
-const string listOfArgsinputFilePathDOT[4] = { "-id", "-ID", "--inputdot", "--INPUTDOT" };
+const string listOfArgsInputFilePathJSON[4] = { "-ij", "-IJ", "--inputjson", "--INPUTJSON" };
+const string listOfArgsInputFilePathDOT[4] = { "-id", "-ID", "--inputdot", "--INPUTDOT" };
 const string listOfArgsHelp[4] = { "-h", "-H", "--help", "--HELP" };
 
 int inputArgumentParser(int argc, char* argv[], string& inputFilePathJSON, string& inputFilePathDOT) {
@@ -22,7 +23,7 @@ int inputArgumentParser(int argc, char* argv[], string& inputFilePathJSON, strin
 
     for (int i = 1; i < argc; i++) {
         //cout << "i = " << i << "   " << argv[i] << endl;
-        if (find(begin(listOfArgsinputFilePathJSON), end(listOfArgsinputFilePathJSON), argv[i]) != end(listOfArgsinputFilePathJSON)) {
+        if (find(begin(listOfArgsInputFilePathJSON), end(listOfArgsInputFilePathJSON), argv[i]) != end(listOfArgsInputFilePathJSON)) {
             if (i + 1 != argc) {
                 inputFilePathJSON = argv[i + 1];
                 i++;
@@ -31,7 +32,7 @@ int inputArgumentParser(int argc, char* argv[], string& inputFilePathJSON, strin
                 cout << "ERROR: input JSON file path is missing after \"" << argv[i] << "\"" << endl;
         }
 
-        else if (find(begin(listOfArgsinputFilePathDOT), end(listOfArgsinputFilePathDOT), argv[i]) != end(listOfArgsinputFilePathDOT)) {
+        else if (find(begin(listOfArgsInputFilePathDOT), end(listOfArgsInputFilePathDOT), argv[i]) != end(listOfArgsInputFilePathDOT)) {
             if (i + 1 != argc) {
                 inputFilePathDOT = argv[i + 1];
                 i++;
@@ -56,21 +57,22 @@ int inputArgumentParser(int argc, char* argv[], string& inputFilePathJSON, strin
 }
 
 
-bool listsOfTokenAreEqual(list<Token>& list1, list<Token>& list2) {
+unsigned int listsOfTokenAreEqual(list<Token>& list1, list<Token>& list2) {
     auto it1 = list1.begin();
     auto it2 = list2.begin();
 
     if(list1.size() != list2.size())
-        return false;
+        return 1;
 
     while (it1 != list1.end() && it2 != list2.end())
     {
         if (*it1 != *it2)
-            return false;
+            //return false;
+            return (*it1).getLine();
         it1++;
         it2++;
     }
-    return true;
+    return 0;
 }
 
 #endif

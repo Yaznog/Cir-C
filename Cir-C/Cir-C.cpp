@@ -37,7 +37,7 @@ int main(int argc, char* argv[])
     extractFile(inputFilePathDOT, extractedFileDOT);
     //printInConsoleFileDOT(extractedFileDOT);
 
-    /// Lexer processing --------------------------------------------------------------------------
+        /// Lexer processing ----------------------------------------------------------------------
 
     list<Token> listTokenJSON;
     lexingInputStringJSON(extractedFileJSON, listTokenJSON);
@@ -45,8 +45,8 @@ int main(int argc, char* argv[])
                                 
     list<Token> listTokenDOT;
     lexingInputStringDOT(extractedFileDOT, listTokenDOT);
-    //printInConsoleListToken("Print listTokenDOT:", listTokenDOT);
-        
+    //printInConsoleListToken("Print listTokenDOT:", listTokenDOT);          
+                  
         /// End of the program --------------------------------------------------------------------
     printInConsoleStopDownpMessage();
 

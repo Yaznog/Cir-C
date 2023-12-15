@@ -44,8 +44,6 @@ void separateStringBySeparator(const string& separator, const string& inputStrin
 
 tokenType getStringTypeDOT(const string& inputString) {
 
-    // box is also a keyword ???
-
     if (inputString.length() == 1) {
         switch (inputString[0]) {
         case '(':
@@ -70,25 +68,32 @@ tokenType getStringTypeDOT(const string& inputString) {
             return EQUAL;
         case '#':
             return HASH;
+        case '/':
+            return SLASH;
         default:
             return SYMBOLE;
         }
     }
     else if (inputString == "->")
         return AFFECTATION;
-    else if (inputString == "//")
+    else if (inputString[0] == '#' || (inputString[0] == '/' && inputString[1] == '/'))
         return COMMENT;
+    //else if (inputString == "//")
+    //    return COMMENT;
     else if (inputString == "/*")
         return LEFTCOMMENT;
     else if (inputString == "*/")
         return RIGHTCOMMENT;
     else if ((inputString[0] == '\"' && inputString[inputString.length() - 1] == '\"') || (inputString[0] == '\'' && inputString[inputString.length() - 1] == '\'')) {
-        if (inputString.substr(1, inputString.length()-2) == "digraph" || inputString.substr(1, inputString.length() - 2) == "label" || inputString.substr(1, inputString.length() - 2) == "shape" || inputString.substr(1, inputString.length() - 2) == "box")
+        if (find(keywordArrayDOT, keywordArrayDOT + sizeof(keywordArrayDOT) / sizeof(int), inputString.substr(1, inputString.length() - 2)) != (keywordArrayDOT + sizeof(keywordArrayDOT) / sizeof(int)))
             return KEYWORD;
         return TEXT;
     }
-    else if (inputString == "digraph" || inputString == "label" || inputString == "shape" || inputString == "box")
+    else if (find(keywordArrayDOT, keywordArrayDOT + sizeof(keywordArrayDOT) / sizeof(int), inputString) != (keywordArrayDOT + sizeof(keywordArrayDOT) / sizeof(int)))
         return KEYWORD;
+    /*
+    else if (inputString == "digraph" || inputString == "label" || inputString == "shape" || inputString == "box")
+        return KEYWORD;*/
     else 
         return SYMBOLE;
     return UNKNOWN;
@@ -121,25 +126,30 @@ tokenType getStringTypeJSON(const string& inputString) {
             return EQUAL;
         case '#': // Forbidden in JSON files
             return HASH;
+        case '/':
+            return SLASH;
         default:
             return SYMBOLE;
         }
     }
     else if (inputString == "->")
         return AFFECTATION;
-    else if (inputString == "//")
+    else if (inputString[0] == '/' && inputString[1] == '/')
         return COMMENT;
     else if (inputString == "/*")
         return LEFTCOMMENT;
     else if (inputString == "*/")
-        return RIGHTCOMMENT;
+        return RIGHTCOMMENT;    
     else if ((inputString[0] == '\"' && inputString[inputString.length() - 1] == '\"') || (inputString[0] == '\'' && inputString[inputString.length() - 1] == '\'')) {
-        if (inputString.substr(1, inputString.length() - 2) == "signal" || inputString.substr(1, inputString.length() - 2) == "name" || inputString.substr(1, inputString.length() - 2) == "wave" || inputString.substr(1, inputString.length() - 2) == "data")
+        if (find(keywordArrayJSON, keywordArrayJSON + sizeof(keywordArrayJSON) / sizeof(int), inputString.substr(1, inputString.length() - 2)) != (keywordArrayJSON + sizeof(keywordArrayJSON) / sizeof(int)))
             return KEYWORD;
         return TEXT;
     }
-    else if (inputString == "signal" || inputString == "name" || inputString == "wave" || inputString == "data")
+    else if (find(keywordArrayJSON, keywordArrayJSON + sizeof(keywordArrayJSON) / sizeof(int), inputString) != (keywordArrayJSON + sizeof(keywordArrayJSON) / sizeof(int)))
         return KEYWORD;
+    /*
+    else if (inputString == "signal" || inputString == "name" || inputString == "wave" || inputString == "data")
+        return KEYWORD;*/
     else
         return SYMBOLE;
     return UNKNOWN;
@@ -173,12 +183,32 @@ void splitString(const string& inputString, list<Token>& listToken, const string
             lineNumber++;
             break;
 
-        case '(': case ')': case '[': case ']': case '{': case '}': case ',': case ';': case ':': case '=': case '#':
+        case '(': case ')': case '[': case ']': case '{': case '}': case ',': case ';': case ':': case '=':
             checkStringAndAddTokenInList(currentString, listToken, lineNumber, fileExtension);
             currentString = inputString[index];
             checkStringAndAddTokenInList(currentString, listToken, lineNumber, fileExtension);
             break;
 
+        case '#':
+            if (fileExtension == "DOT") {
+                checkStringAndAddTokenInList(currentString, listToken, lineNumber, fileExtension);
+                currentString += inputString[index];
+                //index++;
+                for (index = index + 1; index < inputString.length() - 1; index++) {
+                    currentString += inputString[index];
+                    if (inputString[index + 1] == '\n')
+                        break;
+                }
+            }
+            else {
+                checkStringAndAddTokenInList(currentString, listToken, lineNumber, fileExtension);
+                currentString = inputString[index];
+                checkStringAndAddTokenInList(currentString, listToken, lineNumber, fileExtension);
+                break;
+            }  
+            checkStringAndAddTokenInList(currentString, listToken, lineNumber, fileExtension);
+            break;                              
+                                    
         case '-':
             checkStringAndAddTokenInList(currentString, listToken, lineNumber, fileExtension);
             currentString = inputString[index];                
@@ -219,11 +249,21 @@ void splitString(const string& inputString, list<Token>& listToken, const string
             checkStringAndAddTokenInList(currentString, listToken, lineNumber, fileExtension);
             break;
 
+            
         case '/':
             checkStringAndAddTokenInList(currentString, listToken, lineNumber, fileExtension);
             currentString += inputString[index];
-            if (index < inputString.length() - 1) {
-                if (inputString[index + 1] == '/' || inputString[index + 1] == '*') {
+            if (index + 1 < inputString.length()) {
+                if (inputString[index + 1] == '/') {
+                    currentString += inputString[index + 1];
+                    index++;
+                    for (index = index + 1; index < inputString.length()-1; index++) {
+                        currentString += inputString[index];
+                        if (inputString[index+1] == '\n')
+                            break;                            
+                    }
+                }
+                else if (inputString[index + 1] == '*') {
                     currentString += inputString[index + 1];
                     checkStringAndAddTokenInList(currentString, listToken, lineNumber, fileExtension);
                     index++;
@@ -233,8 +273,8 @@ void splitString(const string& inputString, list<Token>& listToken, const string
                 break;
             }
             checkStringAndAddTokenInList(currentString, listToken, lineNumber, fileExtension);
-            break;
-
+        break;
+        
         case '*':
             checkStringAndAddTokenInList(currentString, listToken, lineNumber, fileExtension);
             currentString += inputString[index];

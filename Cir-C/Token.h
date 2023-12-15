@@ -25,9 +25,12 @@ enum tokenType {
     HASH,               // #
     LEFTCOMMENT,        // /*
     RIGHTCOMMENT,       // */
-    KEYWORD             // (DOT) digraph, label, shape || (JSON) signal, name, wave, data
+    KEYWORD,             // (DOT) digraph, label, shape || (JSON) signal, name, wave, data
+    SLASH
 };
 
+const string keywordArrayDOT[4] = { "digraph", "label", "shape", "box" };
+const string keywordArrayJSON[13] = { "signal", "name", "wave", "data", "phase", "period", "node", "head", "text", "class", "foot", "config", "edge" };
 
 class Token {
 
@@ -91,7 +94,10 @@ public:
             return "RIGHTCOMMENT";
         case 18:
             return "KEYWORD";
+        case 19:
+            return "SLASH";
         }
+        return "UNKNOWN";
     }
     
     bool operator==(Token& other) {
