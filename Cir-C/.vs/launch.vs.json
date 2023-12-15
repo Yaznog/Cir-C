@@ -1,0 +1,13 @@
+{
+  "version": "0.2.1",
+  "defaults": {},
+  "configurations": [
+    {
+      "type": "default",
+      "project": "CMakeLists.txt",
+      "projectTarget": "Cir-C.exe",
+      "name": "Cir-C.exe",
+      "args": [ "-id C:\\Users\\cedri\\source\\repos\\Yaznog\\Cir-C\\testfiles\\and.dot -ij C:\\Users\\cedri\\source\\repos\\Yaznog\\Cir-C\\testfiles\\logic2.json" ]
+    }
+  ]
+}

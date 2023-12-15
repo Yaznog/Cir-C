@@ -6,6 +6,7 @@
 #include <chrono>
 #include <ctime>
 #include <list>
+#include <iomanip>
 
 #include "Token.h"
 
@@ -40,7 +41,7 @@ void printInConsoleStopDownpMessage() {
 
 
 void printInConsoleFileDOT(const string& inputString) {
-    cout << "\nPrint DOT file:\n" << endl;
+    cout << BOLD << "\nPrint DOT file:\n" << RESET << endl;
     cout << inputString << endl;
 }
 
@@ -59,14 +60,15 @@ void printInConsoleListString(const string& startMessage, const list<string>& in
 
 
 void printInConsoleListToken(const string& startMessage, const list<Token>& inputListToken) {
-    cout << startMessage << endl;
+    cout << "\n" << startMessage << "\n" << endl;
     for (auto listElement : inputListToken)
-        cout << listElement.toString() << endl;
+        cout << left << "Value: \"" << setw(35) << (listElement.getValue() + "\"") << left << "Type: " << setw(15) << listElement.getTypeString() << left << "Line: " << setw(5) << to_string(listElement.getLine()) << endl << "---------------------------------------------------------------------------" << endl;
+    cout << endl;
 }
 
-inline void printErrorMessage(const string& inputString)    { cout << BOLD << RED       << "Error: "    << RESET << inputString << endl; }
-inline void printWarningMessage(const string& inputString)  { cout << BOLD << MAGENTA   << "Warning: "  << RESET << inputString << endl; }
-inline void printInfoMessage(const string& inputString)     { cout << BOLD << BLUE      << "Info: "     << RESET << inputString << endl; }
-inline void printDevMessage(const string& inputString)      { cout << BOLD << CYAN      << "Dev: "      << RESET << inputString << endl; }
+inline void printErrorMessage(const string& inputString)    { cout << BOLD << RED       << setw(9) << "Error: "     << RESET << inputString << endl; }
+inline void printWarningMessage(const string& inputString)  { cout << BOLD << MAGENTA   << setw(9) << "Warning: "   << RESET << inputString << endl; }
+inline void printInfoMessage(const string& inputString)     { cout << BOLD << BLUE      << setw(9) << "Info: "      << RESET << inputString << endl; }
+inline void printDevMessage(const string& inputString)      { cout << BOLD << CYAN      << setw(9) << "Dev: "       << RESET << inputString << endl; }
 
 #endif
