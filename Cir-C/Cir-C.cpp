@@ -18,6 +18,8 @@ int main(int argc, char* argv[])
         /// Beginning of the program --------------------------------------------------------------
     printInConsoleStartUpMessage();
 
+    printDevMessage("branch devYaznog");
+
     unitTestingLauncher(); // Unit test(s)
 
     string inputFilePathJSON = "";
@@ -45,7 +47,10 @@ int main(int argc, char* argv[])
                                 
     list<Token> listTokenDOT;
     lexingInputStringDOT(extractedFileDOT, listTokenDOT);
-    //printInConsoleListToken("Print listTokenDOT:", listTokenDOT);          
+    //printInConsoleListToken("Print listTokenDOT:", listTokenDOT);         
+
+        /// Lexer processing ----------------------------------------------------------------------
+
                   
         /// End of the program --------------------------------------------------------------------
     printInConsoleStopDownpMessage();
