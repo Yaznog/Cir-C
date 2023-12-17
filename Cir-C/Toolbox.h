@@ -75,4 +75,8 @@ unsigned int listsOfTokenAreEqual(list<Token>& list1, list<Token>& list2) {
     return 0;
 }
 
+void cleanListOfToken(list<Token>& inputList) {
+    inputList.erase(inputList.begin(), inputList.end());
+}
+
 #endif

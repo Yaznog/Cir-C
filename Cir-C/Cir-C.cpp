@@ -2,7 +2,10 @@
 #include "FileManager.h"
 #include "MessageManager.h"
 #include "Lexer.h"
+#include "Parser.h"
 #include "Token.h"
+#include "LogicGate.h"
+#include "Simulator.h"
 #include "UnitTestingRoom.h"
 
 #include <iostream>
@@ -49,9 +52,15 @@ int main(int argc, char* argv[])
     lexingInputStringDOT(extractedFileDOT, listTokenDOT);
     //printInConsoleListToken("Print listTokenDOT:", listTokenDOT);         
 
-        /// Lexer processing ----------------------------------------------------------------------
+        /// Parser processing ---------------------------------------------------------------------
+                      
 
-                  
+
+
+
+
+
+
         /// End of the program --------------------------------------------------------------------
     printInConsoleStopDownpMessage();
 

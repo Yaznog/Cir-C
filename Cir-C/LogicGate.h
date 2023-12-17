@@ -9,8 +9,8 @@
 using namespace std;
 
 enum LogicState {
-    1,
-    0,
+    H,
+    L,
     X,
     Z
 };
@@ -18,25 +18,48 @@ enum LogicState {
 LogicState operator&(LogicState& inputA, LogicState& inputB) {
     if (inputA == X || inputA == Z || inputB == X || inputB == Z)
         return X;
-    (inputA == 1 && inputB == 1) ? return 1 : return 0;
+    if (inputA == H && inputB == H) 
+        return H;
+    else return L;
 }
 
 LogicState operator|(LogicState& inputA, LogicState& inputB) {
     if (inputA == X || inputA == Z || inputB == X || inputB == Z)
         return X;
-    (inputA == 1 || inputB == 1) ? return 1 : return 0;
+    if(inputA == H || inputB == H)
+        return H;
+    else return L;
 }
 
 LogicState operator^(LogicState& inputA, LogicState& inputB) {
     if (inputA == X || inputA == Z || inputB == X || inputB == Z)
         return X;
-    (inputA == 1 != inputB == 1) ? return 1 : return 0;
+    if(inputA == H != inputB == H)
+        return H;
+    else return L;
 }
 
 LogicState operator~(LogicState& inputA) {
     if (inputA == X || inputA == Z)
         return X;
-    (inputA == 1) ? return 0 : return 1;
+    if(inputA == H)
+        return L;
+    else return H;
+}
+
+
+string convertLogicStateToString(LogicState inputLogicState) {
+    switch (inputLogicState) {
+    case H:
+        return "-";
+    case L:
+        return "_";
+    case X:
+        return "X";
+    case Z:
+        return "Z";
+    }
+    return "U";
 }
 
 
@@ -46,12 +69,7 @@ public:
 
     LogicGateBase(const string& inputId) : m_id(inputId) {};
 
-        
-    static string getStringType(const string& inputString) {
-        return "nope";
-    };
-
-    string toString() { return this->convertTokenTypeToString(this->m_type) + " " + this->m_value + " " + to_string(this->m_line); };
+    //string toString();
 
     inline const string getId() { return this->m_id; };
     inline const string getOutput() { return this->m_id; };

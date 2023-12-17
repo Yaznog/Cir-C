@@ -7,8 +7,11 @@
 #include <ctime>
 #include <list>
 #include <iomanip>
+#include <map>
+#include <vector>
 
 #include "Token.h"
+#include "LogicGate.h"
 
 #define RESET       "\033[0m"
 #define BLACK       "\033[30m"
@@ -65,6 +68,23 @@ void printInConsoleListToken(const string& startMessage, const list<Token>& inpu
         cout << left << "Value: \"" << setw(35) << (listElement.getValue() + "\"") << left << "Type: " << setw(15) << listElement.getTypeString() << left << "Line: " << setw(5) << to_string(listElement.getLine()) << endl << "---------------------------------------------------------------------------" << endl;
     cout << endl;
 }
+
+
+string vectorLogicStateToString(vector<LogicState> inputVector) {
+    string outputString = "";
+    for (auto listElement : inputVector)
+        outputString += convertLogicStateToString(listElement);
+    return outputString;
+}
+
+
+void printInConsoleMapWave(const string& startMessage, const map<string, vector<LogicState>> inputMapWave) {
+    cout << "\n" << startMessage << "\n" << endl;
+    for (auto listElement : inputMapWave)
+        cout << left << "Key: \"" << setw(20) << (listElement.first + "\"") << left << "Value: " << setw(15) << vectorLogicStateToString(listElement.second) << endl << "---------------------------------------------------------------------------" << endl;
+    cout << endl;
+}
+
 
 inline void printErrorMessage(const string& inputString)    { cout << BOLD << RED       << setw(9) << "Error: "     << RESET << inputString << endl; }
 inline void printWarningMessage(const string& inputString)  { cout << BOLD << MAGENTA   << setw(9) << "Warning: "   << RESET << inputString << endl; }
