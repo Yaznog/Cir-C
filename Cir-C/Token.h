@@ -114,6 +114,13 @@ public:
             return false;
     }
 
+    bool operator&(Token& other) {
+        if (m_type != other.m_type || m_value != other.m_value || m_line != other.m_line)
+            return true;
+        else
+            return false;
+    }
+
 private:
 
     tokenType m_type;

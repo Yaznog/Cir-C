@@ -40,8 +40,8 @@ bool unitTest_extractFile_JSON() {
 	
 	const string inputString = "C:\\Users\\cedri\\source\\repos\\Yaznog\\Cir-C\\testfiles\\testFileJson.json";
 	string outputString = "";
-	const string expectedOutputString = "{\n  \"signal\": [\n    {\n      \"name\": \"INPUT A\",\n      \"wave\": \"l..h.\"\n    },\n    {\n      \"name\": \"INPUT B\",\n      \"wave\": \"l..h.\"\n    },\n    {\n      //\"name\": \"INPUT C\",\n      \"name\": \"INPUT D\",\n      \"wave\": \"l..h.\"\n    },\n    /*{\n      \"name\": \"INPUT E\",\n      \"wave\": \"l..h.\"\n    }*/\n    {\n      \'name\': \'INPUT F\',\n      \'wave\': \'l..h.\'\n    },\n    {\n      name: \"INPUT G\",\n      wave: \"l..h.\"\n    }\n  ]\n}\n";
-	
+	const string expectedOutputString = "{\n  \"signal\": [\n    {\n      \"name\": \"INPUT A\",\n      \"wave\": \"l..h.\"\n    },\n    {\n      \"name\": \"INPUT B\",\n      \"wave\": \"l..h.\"\n    },\n    {\n      //\"name\": \"INPUT C\",\n      \"name\": \"INPUT D\",\n      \"wave\": \"l..h.\"\n    },/*\n    {\n      \"name\": \"INPUT E\",\n      \"wave\": \"l..h.\"\n    },*/\n    {\n      \'name\': \'INPUT F\',\n      \'wave\': \'l..h.\'\n    },\n    {\n      name: \"INPUT G\",\n      wave: \"l..h.\"\n    }\n  ]\n}\n";
+		
 	extractFile(inputString, outputString);	
 
 	if (expectedOutputString == outputString)
@@ -77,7 +77,7 @@ bool unitTest_lexingInputStringDOT() {
 	expectedOutputListToken.push_back(Token(RIGHTSQUARE,	"]",			3));
 	expectedOutputListToken.push_back(Token(SEMICOLON,		";",			3));
 
-	expectedOutputListToken.push_back(Token(COMMENT, "//I3 [label = \"INPUT C\"];", 4));
+	expectedOutputListToken.push_back(Token(COMMENT,		"//I3 [label = \"INPUT C\"];", 4));
 
 	/*
 	expectedOutputListToken.push_back(Token(COMMENT,		"//",			4));
@@ -88,7 +88,10 @@ bool unitTest_lexingInputStringDOT() {
 	expectedOutputListToken.push_back(Token(TEXT,			"\"INPUT C\"",	4));
 	expectedOutputListToken.push_back(Token(RIGHTSQUARE,	"]",			4));
 	expectedOutputListToken.push_back(Token(SEMICOLON,		";",			4));*/
+	   
 
+	expectedOutputListToken.push_back(Token(COMMENT,		"/*I4 [label = \"INPUT D\"];\n    I5 [label = \"INPUT E\"];*/", 6));
+	/*
 	expectedOutputListToken.push_back(Token(LEFTCOMMENT,	"/*",			5));
 	expectedOutputListToken.push_back(Token(SYMBOLE,		"I4",			5));
 	expectedOutputListToken.push_back(Token(LEFTSQUARE,		"[",			5));
@@ -105,7 +108,7 @@ bool unitTest_lexingInputStringDOT() {
 	expectedOutputListToken.push_back(Token(TEXT,			"\"INPUT E\"",	6));
 	expectedOutputListToken.push_back(Token(RIGHTSQUARE,	"]",			6));
 	expectedOutputListToken.push_back(Token(SEMICOLON,		";",			6));
-	expectedOutputListToken.push_back(Token(RIGHTCOMMENT,	"*/",			6));
+	expectedOutputListToken.push_back(Token(RIGHTCOMMENT,	"*///",			6));
 		
 	expectedOutputListToken.push_back(Token(COMMENT,		"#I6 [label = \"INPUT F\"];", 7));
 	
@@ -162,7 +165,7 @@ bool unitTest_lexingInputStringDOT() {
 
 	unsigned int lineNumber;
 	if ((lineNumber = listsOfTokenAreEqual(outputListToken, expectedOutputListToken)) != 0) {
-		printInfoMessage("Lists of Token are different at line " + to_string(lineNumber));
+		printErrorMessage("Lists of Token are different at line " + to_string(lineNumber));
 		return true;
 	}
 	else
@@ -172,13 +175,13 @@ bool unitTest_lexingInputStringDOT() {
 
 bool unitTest_lexingInputStringJSON() {
 	const string inputString =
-		"{\n  \"signal\": [\n    {\n      \"name\": \"INPUT A\",\n      \"wave\": \"l..h.\"\n    },\n    {\n      \"name\": \"INPUT B\",\n      \"wave\": \"l..h.\"\n    },\n    {\n      //\"name\": \"INPUT C\",\n      \"name\": \"INPUT D\",\n      \"wave\": \"l..h.\"\n    },\n    /*{\n      \"name\": \"INPUT E\",\n      \"wave\": \"l..h.\"\n    }*/\n    {\n      \'name\': \'INPUT F\',\n      \'wave\': \'l..h.\'\n    },\n    {\n      name: \"INPUT G\",\n      wave: \"l..h.\"\n    }\n  ]\n}\n";
+		"{\n  \"signal\": [\n    {\n      \"name\": \"INPUT A\",\n      \"wave\": \"l..h.\"\n    },\n    {\n      \"name\": \"INPUT B\",\n      \"wave\": \"l..h.\"\n    },\n    {\n      //\"name\": \"INPUT C\",\n      \"name\": \"INPUT D\",\n      \"wave\": \"l..h.\"\n    },/*\n    {\n      \"name\": \"INPUT E\",\n      \"wave\": \"l..h.\"\n    }*/\n    {\n      \'name\': \'INPUT F\',\n      \'wave\': \'l..h.\'\n    },\n    {\n      name: \"INPUT G\",\n      wave: \"l..h.\"\n    }\n  ]\n}\n";
 	list<Token> outputListToken;
 	list<Token> expectedOutputListToken;
 
-	expectedOutputListToken.push_back(Token(LEFTCURLY, "{", 1));
+	expectedOutputListToken.push_back(Token(LEFTCURLY,		"{",			1));
 
-	expectedOutputListToken.push_back(Token(KEYWORD,			"\"signal\"",	2));
+	expectedOutputListToken.push_back(Token(KEYWORD,		"\"signal\"",	2));
 	expectedOutputListToken.push_back(Token(COLON,			":",			2));
 	expectedOutputListToken.push_back(Token(LEFTSQUARE,		"[",			2));
 
@@ -295,7 +298,7 @@ bool unitTest_lexingInputStringJSON() {
 
 	unsigned int lineNumber;
 	if ((lineNumber = listsOfTokenAreEqual(outputListToken, expectedOutputListToken)) != 0) {
-		printInfoMessage("Lists of Token are different at line " + to_string(lineNumber));
+		printErrorMessage("Lists of Token are different at line " + to_string(lineNumber));
 		return true;
 	}
 	else
@@ -460,7 +463,8 @@ bool unitTest_parserInputTokenListJSON() {
 	inputListToken.push_back(Token(RIGHTCURLY,		"}",			15));
 	inputListToken.push_back(Token(COMMA,			",",			15));
 
-
+	inputListToken.push_back(Token(COMMENT,			"/*{\n      \"name\": \"INPUT E\",\n      \"wave\": \"l..h.\"\n    }*/", 19));
+	/*
 	inputListToken.push_back(Token(LEFTCOMMENT,		"/*",			16));
 	inputListToken.push_back(Token(LEFTCURLY,		"{",			16));
 
@@ -474,7 +478,7 @@ bool unitTest_parserInputTokenListJSON() {
 	inputListToken.push_back(Token(TEXT,			"\"l..h.\"",	18));
 
 	inputListToken.push_back(Token(RIGHTCURLY,		"}",			19));
-	inputListToken.push_back(Token(RIGHTCOMMENT,	"*/",			19));
+	inputListToken.push_back(Token(RIGHTCOMMENT,	"*///",			19));
 
 
 	inputListToken.push_back(Token(LEFTCURLY,		"{",			20));
@@ -511,17 +515,28 @@ bool unitTest_parserInputTokenListJSON() {
 
 	parserInputTokenListJSON(inputListToken, outputGraph);
 
-	printInConsoleMapWave("Print outputGraph:", outputGraph);
+	//printInConsoleMapWave("Print outputGraph:", outputGraph);
 
-	/*
-	unsigned int lineNumber;
-	if ((lineNumber = listsOfTokenAreEqual(outputListToken, inputListToken)) != 0) {
-		printInfoMessage("Lists of Token are different at line " + to_string(lineNumber));
+	vector<LogicState> tempVector;
+
+	tempVector.push_back(X);
+	tempVector.push_back(L);
+	tempVector.push_back(L);
+	tempVector.push_back(L);
+	tempVector.push_back(H);
+	tempVector.push_back(H);
+	expectedOutputGraph.insert(pair<string, vector<LogicState>>("INPUT A", tempVector));
+	expectedOutputGraph.insert(pair<string, vector<LogicState>>("INPUT B", tempVector));
+	expectedOutputGraph.insert(pair<string, vector<LogicState>>("INPUT D", tempVector));
+	expectedOutputGraph.insert(pair<string, vector<LogicState>>("INPUT F", tempVector));
+	expectedOutputGraph.insert(pair<string, vector<LogicState>>("INPUT G", tempVector));
+
+	if (expectedOutputGraph != outputGraph) {
+		printInfoMessage("Output graphs are different");
 		return true;
 	}
 	else
-		return false;*/
-
+		return false;
 	return true;
 }
 

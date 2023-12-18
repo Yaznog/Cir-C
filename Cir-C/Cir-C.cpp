@@ -21,7 +21,7 @@ int main(int argc, char* argv[])
         /// Beginning of the program --------------------------------------------------------------
     printInConsoleStartUpMessage();
 
-    printDevMessage("branch devYaznog");
+    printDevMessage("branch devYaznog\n");
 
     unitTestingLauncher(); // Unit test(s)
 
@@ -31,6 +31,7 @@ int main(int argc, char* argv[])
     inputArgumentParser(argc, argv, inputFilePathJSON, inputFilePathDOT);
 
         /// Input files reading -------------------------------------------------------------------
+
     printInfoMessage("Input JSON file path: \"" + inputFilePathJSON + "\"");
     printInfoMessage("Input DOT file path: \"" + inputFilePathDOT + "\"");
                    
@@ -53,15 +54,13 @@ int main(int argc, char* argv[])
     //printInConsoleListToken("Print listTokenDOT:", listTokenDOT);         
 
         /// Parser processing ---------------------------------------------------------------------
-                      
-
-
-
-
-
-
-
+                        
+    map<string, vector<LogicState>> graphJSON;       
+    parserInputTokenListJSON(listTokenJSON, graphJSON);
+    printInConsoleMapWave("Print outputGraph:", graphJSON);
+       
         /// End of the program --------------------------------------------------------------------
+
     printInConsoleStopDownpMessage();
 
     return 0;

@@ -56,14 +56,14 @@ void printInConsoleFileJSON(const string& inputString) {
 
 
 void printInConsoleListString(const string& startMessage, const list<string>& inputStringList) {
-    cout << startMessage << endl;
+    cout << BOLD << startMessage << endl;
     for (auto listElement : inputStringList)
         cout << listElement << endl;
 }
 
 
 void printInConsoleListToken(const string& startMessage, const list<Token>& inputListToken) {
-    cout << "\n" << startMessage << "\n" << endl;
+    cout << BOLD << "\n" << startMessage << "\n" << RESET << endl;
     for (auto listElement : inputListToken)
         cout << left << "Value: \"" << setw(35) << (listElement.getValue() + "\"") << left << "Type: " << setw(15) << listElement.getTypeString() << left << "Line: " << setw(5) << to_string(listElement.getLine()) << endl << "---------------------------------------------------------------------------" << endl;
     cout << endl;
@@ -79,7 +79,7 @@ string vectorLogicStateToString(vector<LogicState> inputVector) {
 
 
 void printInConsoleMapWave(const string& startMessage, const map<string, vector<LogicState>> inputMapWave) {
-    cout << "\n" << startMessage << "\n" << endl;
+    cout << BOLD << "\n" << startMessage << "\n" << RESET << endl;
     for (auto listElement : inputMapWave)
         cout << left << "Key: \"" << setw(20) << (listElement.first + "\"") << left << "Value: " << setw(15) << vectorLogicStateToString(listElement.second) << endl << "---------------------------------------------------------------------------" << endl;
     cout << endl;

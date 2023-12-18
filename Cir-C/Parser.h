@@ -61,41 +61,49 @@ bool parserJSONKeywordSignalGetNameWave(list<Token>& listToken, map<string, vect
     int tempCounter = 0;
     string name = "";
     vector<LogicState> logicState;
-    logicState.push_back(X);
+    logicState.push_back(X);    
 
     while (itListToken != listToken.end() && !endWhileFlag) {
-        if ((*itListToken).getType() != COMMENT) {
+            if ((*itListToken).getType() == COMMENT) { itListToken++; continue; }
             if ((*itListToken).getType() != KEYWORD) { printErrorMessage("In JSON parser, line " + to_string((*itListToken).getLine()) + +", " + "need a KEYWORD"); return true; }
-
-            //const string keywordArrayJSON[13] = { "phase", "period", "node", "text", "class", "edge" };
-
-            if ((*itListToken).getValue() == "\"name\"") {
+            
+            if ((*itListToken).getValue() == "\"name\"" || (*itListToken).getValue() == "\'name\'" || (*itListToken).getValue() == "name") {
+                
                 itListToken++;
+                if (itListToken == listToken.end()) { printErrorMessage("In JSON parser, line " + to_string((*itListToken).getLine()) + +", " + "need a COLON"); return true; }
                 if ((*itListToken).getType() != COLON) { printErrorMessage("In JSON parser, line " + to_string((*itListToken).getLine()) + +", " + "need a COLON"); return true; }
+                
                 itListToken++;
+                if (itListToken == listToken.end()) { printErrorMessage("In JSON parser, line " + to_string((*itListToken).getLine()) + +", " + "need a TEXT"); return true; }
                 if ((*itListToken).getType() != TEXT) { printErrorMessage("In JSON parser, line " + to_string((*itListToken).getLine()) + +", " + "need a TEXT"); return true; }
 
                 name = (*itListToken).getValue().substr(1, (*itListToken).getValue().length() - 2);
-
-                if (itListToken != listToken.end()) {
-                    itListToken++;
+                
+                itListToken++;
+                if (itListToken != listToken.end()) {                    
                     if ((*itListToken).getType() != COMMA) { printErrorMessage("In JSON parser, line " + to_string((*itListToken).getLine()) + +", " + "need a COMMA"); return true; }
-                    else if (itListToken == listToken.end()) { printErrorMessage("In JSON parser, line " + to_string((*itListToken).getLine()) + +", " + "unexpected COMMA"); return true; }
+                    itListToken++;
+                    if (itListToken == listToken.end()) { printErrorMessage("In JSON parser, line " + to_string((*itListToken).getLine()) + +", " + "unexpected COMMA"); return true; }
                 }
             }
-            else if ((*itListToken).getValue() == "\"wave\"") {
+            else if ((*itListToken).getValue() == "\"wave\"" || (*itListToken).getValue() == "\'wave\'" || (*itListToken).getValue() == "wave") {
+
                 itListToken++;
+                if (itListToken == listToken.end()) { printErrorMessage("In JSON parser, line " + to_string((*itListToken).getLine()) + +", " + "need a COLON"); return true; }
                 if ((*itListToken).getType() != COLON) { printErrorMessage("In JSON parser, line " + to_string((*itListToken).getLine()) + +", " + "need a COLON"); return true; }
+                
                 itListToken++;
+                if (itListToken == listToken.end()) { printErrorMessage("In JSON parser, line " + to_string((*itListToken).getLine()) + +", " + "need a TEXT"); return true; }
                 if ((*itListToken).getType() != TEXT) { printErrorMessage("In JSON parser, line " + to_string((*itListToken).getLine()) + +", " + "need a TEXT"); return true; }
 
                 convertJSONWaveToLogicState((*itListToken).getValue().substr(1, (*itListToken).getValue().length() - 2), logicState);
-                /*
-                if (itListToken != listToken.end()) {
-                    itListToken++;
+                
+                itListToken++;
+                if (itListToken != listToken.end()) {                    
                     if ((*itListToken).getType() != COMMA) { printErrorMessage("In JSON parser, line " + to_string((*itListToken).getLine()) + +", " + "need a COMMA"); return true; }
-                    else if (itListToken == listToken.end()) { printErrorMessage("In JSON parser, line " + to_string((*itListToken).getLine()) + +", " + "unexpected COMMA"); return true; }
-                }  */
+                    itListToken++;
+                    if (itListToken == listToken.end()) { printErrorMessage("In JSON parser, line " + to_string((*itListToken).getLine()) + +", " + "unexpected COMMA"); return true; }
+                }  
             }
             else if ((*itListToken).getValue() == "\"data\"") {
                 printWarningMessage("In JSON parser, line " + to_string((*itListToken).getLine()) + +", " + (*itListToken).getTypeString() + " \"" + (*itListToken).getValue() + "\" not implemented");
@@ -103,8 +111,7 @@ bool parserJSONKeywordSignalGetNameWave(list<Token>& listToken, map<string, vect
             else {
                 printWarningMessage("In JSON parser, line " + to_string((*itListToken).getLine()) + +", " + "unexpected " + (*itListToken).getTypeString() + " \"" + (*itListToken).getValue() + "\"");
             }
-        }
-        itListToken++;
+        //itListToken++;
     }
 
     if (name != "" && logicState.size() != 1) {
@@ -112,6 +119,7 @@ bool parserJSONKeywordSignalGetNameWave(list<Token>& listToken, map<string, vect
         return false;
     }
     else return true;
+    return true;
 }
 
 bool parserJSONKeywordSignal(list<Token>& listToken, map<string, vector<LogicState>>& outputGraph) {
@@ -119,35 +127,37 @@ bool parserJSONKeywordSignal(list<Token>& listToken, map<string, vector<LogicSta
     bool endWhileFlag = false;
     list<Token> subListToken;
     int tempCounter = 0;
-
-    //if ((*itListToken).getType() == COMMENT) itListToken++; continue;
-
+        
     while (itListToken != listToken.end() && !endWhileFlag) {
-        if ((*itListToken).getType() != COMMENT) {
-            if ((*itListToken).getType() != LEFTCURLY) { printErrorMessage("In JSON parser, line " + to_string((*itListToken).getLine()) + +", " + "signal element need to start with a LEFTCURLY"); return true; }
-            itListToken++;
-            cleanListOfToken(subListToken);
-
-            while (itListToken != listToken.end() && !endWhileFlag) {
-                if ((*itListToken).getType() == COMMENT) itListToken++; continue;
-                if ((*itListToken).getType() == LEFTCURLY) tempCounter++;
-                if ((*itListToken).getType() == RIGHTCURLY) {
-                    if (tempCounter == 0) break; else tempCounter--;
-                }
-                subListToken.push_back(*itListToken);
-                itListToken++;
-            }
-
-            if (parserJSONKeywordSignalGetNameWave(subListToken, outputGraph)) return true;
-
-            if (itListToken != listToken.end()) {
-                itListToken++;
-                if ((*itListToken).getType() != COMMA) { printErrorMessage("In JSON parser, line " + to_string((*itListToken).getLine()) + +", " + "need a COMMA"); return true; }
-                else if (itListToken == listToken.end()) { printErrorMessage("In JSON parser, line " + to_string((*itListToken).getLine()) + +", " + "unexpected COMMA"); return true; }
-            }
-        }
+        if ((*itListToken).getType() == COMMENT) { itListToken++; continue; }
+        if ((*itListToken).getType() != LEFTCURLY) { printErrorMessage("In JSON parser, line " + to_string((*itListToken).getLine()) + +", " + "signal element need to start with a LEFTCURLY"); return true; }
         itListToken++;
+        cleanListOfToken(subListToken);
+            
+        if (itListToken == listToken.end()) { return true; } // ---------------------------------------------------
+
+        while (itListToken != listToken.end()) {
+            if ((*itListToken).getType() == COMMENT) { itListToken++; continue; }
+            if ((*itListToken).getType() == LEFTCURLY) tempCounter++;
+            if ((*itListToken).getType() == RIGHTCURLY) {
+                if (tempCounter == 0) break; else tempCounter--;
+            }
+            subListToken.push_back(*itListToken);
+            itListToken++;
+        }
+
+        if (parserJSONKeywordSignalGetNameWave(subListToken, outputGraph)) return true;
+
+        itListToken++;
+        if (itListToken != listToken.end()) {                
+            if ((*itListToken).getType() != COMMA) { printErrorMessage("In JSON parser, line " + to_string((*itListToken).getLine()) + +", " + "need a COMMA"); return true; }
+            itListToken++;
+            if (itListToken == listToken.end()) { printErrorMessage("In JSON parser, line " + to_string((*itListToken).getLine()) + +", " + "unexpected COMMA"); return true; }
+        }
+        //itListToken++;
     }
+
+    //RIGHTSQUARE
 
     return false;
 }
@@ -161,55 +171,65 @@ bool parserInputTokenListJSON(list<Token>& listToken, map<string, vector<LogicSt
 
     while((*itListToken).getType() == COMMENT) itListToken++;
 
+    if (itListToken == listToken.end()) { return true; } // ------------------------------------------
+
     if ((*itListToken).getType() != LEFTCURLY) { printErrorMessage("In JSON parser, line " + to_string((*itListToken).getLine()) + +", " + "JSON file need to start with a LEFTCURLY"); return true; } 
     itListToken++;
 
+    if (itListToken == listToken.end()) { return true; } // ----------------------------------------------
+
     while (itListToken != listToken.end() && !endWhileFlag) {
-        if ((*itListToken).getType() != COMMENT) {
-            if ((*itListToken).getType() != KEYWORD) { printErrorMessage("In JSON parser, line " + to_string((*itListToken).getLine()) + +", " + "need a KEYWORD"); return true; }
+        if ((*itListToken).getType() == COMMENT) { itListToken++; continue; }
 
-            //const string keywordArrayJSON[13] = { "data", "phase", "period", "node", "text", "class", "edge" };
+        if ((*itListToken).getType() != KEYWORD) { printErrorMessage("In JSON parser, line " + to_string((*itListToken).getLine()) + +", " + "need a KEYWORD"); return true; }
+        
+        if ((*itListToken).getValue() == "\"signal\"") {
+            itListToken++;
+            if (itListToken == listToken.end()) { printErrorMessage("In JSON parser, line " + to_string((*itListToken).getLine()) + +", " + "need a COLON"); return true; }
+            if ((*itListToken).getType() != COLON) { printErrorMessage("In JSON parser, line " + to_string((*itListToken).getLine()) + +", " + "need a COLON"); return true; }
+            
+            itListToken++;
+            if (itListToken == listToken.end()) { printErrorMessage("In JSON parser, line " + to_string((*itListToken).getLine()) + +", " + "need a LEFTSQUARE"); return true; }
+            if ((*itListToken).getType() != LEFTSQUARE) { printErrorMessage("In JSON parser, line " + to_string((*itListToken).getLine()) + +", " + "need a LEFTSQUARE"); return true; }
+            
+            cleanListOfToken(subListToken);
 
-            if ((*itListToken).getValue() == "\"signal\"") {
-                itListToken++;
-                if ((*itListToken).getType() != COLON) { printErrorMessage("In JSON parser, line " + to_string((*itListToken).getLine()) + +", " + "need a COLON"); return true; }
-                itListToken++;
-                if ((*itListToken).getType() != LEFTSQUARE) { printErrorMessage("In JSON parser, line " + to_string((*itListToken).getLine()) + +", " + "need a LEFTSQUARE"); return true; }
-                itListToken++;
-                cleanListOfToken(subListToken);
+            itListToken++;
+            if (itListToken == listToken.end()) { return true; } // --------------------------------------  
 
-                while (itListToken != listToken.end()) {
-                    if ((*itListToken).getType() == LEFTSQUARE) tempCounter++;
-                    if ((*itListToken).getType() == RIGHTSQUARE) {
-                        if (tempCounter == 0) break; else tempCounter--;
-                    }
-                    subListToken.push_back(*itListToken);
-                    itListToken++;
+            while (itListToken != listToken.end()) {
+                if ((*itListToken).getType() == LEFTSQUARE) tempCounter++;
+                if ((*itListToken).getType() == RIGHTSQUARE) {
+                    if (tempCounter == 0) break; else tempCounter--;
                 }
-                if (parserJSONKeywordSignal(subListToken, outputGraph)) return true;
-
-            }
-            else if ((*itListToken).getValue() == "\"head\"") {
-                printWarningMessage("In JSON parser, line " + to_string((*itListToken).getLine()) + +", " + (*itListToken).getTypeString() + " \"" + (*itListToken).getValue() + "\" not implemented");
-            }
-            else if ((*itListToken).getValue() == "\"foot\"") {
-                printWarningMessage("In JSON parser, line " + to_string((*itListToken).getLine()) + +", " + (*itListToken).getTypeString() + " \"" + (*itListToken).getValue() + "\" not implemented");
-            }
-            else if ((*itListToken).getValue() == "\"config\"") {
-                printWarningMessage("In JSON parser, line " + to_string((*itListToken).getLine()) + +", " + (*itListToken).getTypeString() + " \"" + (*itListToken).getValue() + "\" not implemented");
-            }
-            else {
-                printWarningMessage("In JSON parser, line " + to_string((*itListToken).getLine()) + +", " + "unexpected " + (*itListToken).getTypeString() + " \"" + (*itListToken).getValue() + "\"");
-            }
-
-            /*
-            if (itListToken != listToken.end()) {
+                subListToken.push_back(*itListToken);
                 itListToken++;
-                if ((*itListToken).getType() != COMMA) { printErrorMessage("In JSON parser, line " + to_string((*itListToken).getLine()) + +", " + "need a COMMA"); return true; }
-                else if (itListToken == listToken.end()) { printErrorMessage("In JSON parser, line " + to_string((*itListToken).getLine()) + +", " + "unexpected COMMA"); return true; }
-            }*/
+            }
+            if (parserJSONKeywordSignal(subListToken, outputGraph)) return true;
         }
+        else if ((*itListToken).getValue() == "\"head\"") {
+            printWarningMessage("In JSON parser, line " + to_string((*itListToken).getLine()) + +", " + (*itListToken).getTypeString() + " \"" + (*itListToken).getValue() + "\" not implemented");
+        }
+        else if ((*itListToken).getValue() == "\"foot\"") {
+            printWarningMessage("In JSON parser, line " + to_string((*itListToken).getLine()) + +", " + (*itListToken).getTypeString() + " \"" + (*itListToken).getValue() + "\" not implemented");
+        }
+        else if ((*itListToken).getValue() == "\"config\"") {
+            printWarningMessage("In JSON parser, line " + to_string((*itListToken).getLine()) + +", " + (*itListToken).getTypeString() + " \"" + (*itListToken).getValue() + "\" not implemented");
+        }
+        else {
+            printWarningMessage("In JSON parser, line " + to_string((*itListToken).getLine()) + +", " + "unexpected " + (*itListToken).getTypeString() + " \"" + (*itListToken).getValue() + "\"");
+        }
+
+        //RIGHTCURLY
+
+
         itListToken++;
+        if (itListToken != listToken.end()) {                
+            if ((*itListToken).getType() != COMMA) { printErrorMessage("In JSON parser, line " + to_string((*itListToken).getLine()) + +", " + "need a COMMA"); return true; }
+            itListToken++;
+            if (itListToken == listToken.end()) { printErrorMessage("In JSON parser, line " + to_string((*itListToken).getLine()) + +", " + "unexpected COMMA"); return true; }
+        }
+        //itListToken++;
     }
     
 	return false;
