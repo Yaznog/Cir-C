@@ -27,19 +27,19 @@ void convertJSONWaveToLogicState(const string& inputString, vector<LogicState>& 
     for (int index = 0; index < inputString.length(); index++) {
         switch (inputString[index]) {
         case 'p': case 'P': case 'h': case 'H': case '1':
-            outputVector.push_back(H);
+            outputVector.push_back(LogicState::H);
             break;
 
         case 'n': case 'N': case 'l': case 'L': case '0':
-            outputVector.push_back(L);
+            outputVector.push_back(LogicState::L);
             break;
 
         case 'x':
-            outputVector.push_back(X);
+            outputVector.push_back(LogicState::X);
             break;
 
         case 'z':
-            outputVector.push_back(Z);
+            outputVector.push_back(LogicState::Z);
             break;
 
         case '.': case '|':
@@ -47,7 +47,7 @@ void convertJSONWaveToLogicState(const string& inputString, vector<LogicState>& 
             break;
 
         default:
-            outputVector.push_back(X);
+            outputVector.push_back(LogicState::X);
             break;            
         }
     }
@@ -61,7 +61,7 @@ bool parserJSONKeywordSignalGetNameWave(list<Token>& listToken, map<string, vect
     int tempCounter = 0;
     string name = "";
     vector<LogicState> logicState;
-    logicState.push_back(X);          
+    logicState.push_back(LogicState::X);
 
     while (itListToken != listToken.end() && !endWhileFlag) {
             if ((*itListToken).getType() == COMMENT) { itListToken++; continue; }

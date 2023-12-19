@@ -28,36 +28,39 @@ int main(int argc, char* argv[])
     string inputFilePathJSON = "";
     string inputFilePathDOT = "";
 
-    inputArgumentParser(argc, argv, inputFilePathJSON, inputFilePathDOT);
+    //inputArgumentParser(argc, argv, inputFilePathJSON, inputFilePathDOT);
 
         /// Input files reading -------------------------------------------------------------------
 
-    printInfoMessage("Input JSON file path: \"" + inputFilePathJSON + "\"");
-    printInfoMessage("Input DOT file path: \"" + inputFilePathDOT + "\"");
+    //printInfoMessage("Input JSON file path: \"" + inputFilePathJSON + "\"");
+    //printInfoMessage("Input DOT file path: \"" + inputFilePathDOT + "\"");
                    
-    string extractedFileJSON = "";
-    extractFile(inputFilePathJSON, extractedFileJSON);
+    //string extractedFileJSON = "";
+    //extractFile(inputFilePathJSON, extractedFileJSON);
     //printInConsoleFileJSON(extractedFileJSON);
 
-    string extractedFileDOT = "";
-    extractFile(inputFilePathDOT, extractedFileDOT);
+    //string extractedFileDOT = "";
+    //extractFile(inputFilePathDOT, extractedFileDOT);
     //printInConsoleFileDOT(extractedFileDOT);    
 
         /// Lexer processing ----------------------------------------------------------------------
 
-    list<Token> listTokenJSON;
-    lexingInputStringJSON(extractedFileJSON, listTokenJSON);
+    //list<Token> listTokenJSON;
+    //lexingInputStringJSON(extractedFileJSON, listTokenJSON);
     //printInConsoleListToken("Print listTokenJSON:", listTokenJSON);
                                 
-    list<Token> listTokenDOT;
-    lexingInputStringDOT(extractedFileDOT, listTokenDOT);
+    //list<Token> listTokenDOT;
+    //lexingInputStringDOT(extractedFileDOT, listTokenDOT);
     //printInConsoleListToken("Print listTokenDOT:", listTokenDOT);         
 
         /// Parser processing ---------------------------------------------------------------------
                         
-    map<string, vector<LogicState>> graphJSON;       
-    parserInputTokenListJSON(listTokenJSON, graphJSON);
-    printInConsoleMapWave("Print outputGraph:", graphJSON);        
+    //map<string, vector<LogicState>> graphJSON;       
+    //parserInputTokenListJSON(listTokenJSON, graphJSON);
+    //printInConsoleMapWave("Print outputGraph:", graphJSON);   
+                  
+
+
 
         /// End of the program --------------------------------------------------------------------
 

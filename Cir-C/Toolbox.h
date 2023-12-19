@@ -94,4 +94,8 @@ void cleanListOfToken(list<Token>& inputList) {
     inputList.erase(inputList.begin(), inputList.end());
 }
 
+
+inline unsigned int max(unsigned int inputValueA, unsigned int inputValueB) { return (inputValueA >= inputValueB) ? inputValueA : inputValueB; }
+inline int          max(int inputValueA, int inputValueB)                   { return (inputValueA >= inputValueB) ? inputValueA : inputValueB; }
+
 #endif

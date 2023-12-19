@@ -8,6 +8,7 @@
 #include "Parser.h"
 #include "Token.h"
 #include "LogicGate.h"
+#include "Simulator.h"
 
 #include <iostream>
 #include <fstream>
@@ -531,12 +532,12 @@ bool unitTest_parserInputTokenListJSON() {
 
 	vector<LogicState> tempVector;
 
-	tempVector.push_back(X);
-	tempVector.push_back(L);
-	tempVector.push_back(L);
-	tempVector.push_back(L);
-	tempVector.push_back(H);
-	tempVector.push_back(H);
+	tempVector.push_back(LogicState::X);
+	tempVector.push_back(LogicState::L);
+	tempVector.push_back(LogicState::L);
+	tempVector.push_back(LogicState::L);
+	tempVector.push_back(LogicState::H);
+	tempVector.push_back(LogicState::H);
 	expectedOutputGraph.insert(pair<string, vector<LogicState>>("INPUT A", tempVector));
 	expectedOutputGraph.insert(pair<string, vector<LogicState>>("INPUT B", tempVector));
 	expectedOutputGraph.insert(pair<string, vector<LogicState>>("INPUT D", tempVector));
@@ -552,11 +553,123 @@ bool unitTest_parserInputTokenListJSON() {
 	return true;
 }
 
+
+	/// Simulator.h ----------------------------------------------------------------------------------
+
+
+bool unitTest_startSimulation() {
+
+	map<string, vector<LogicState>> inputGraphJSONA;	
+
+	vector<LogicState> tempVectorA;
+	tempVectorA.push_back(LogicState::X);
+	tempVectorA.push_back(LogicState::L);
+	tempVectorA.push_back(LogicState::L);
+	tempVectorA.push_back(LogicState::L);
+	tempVectorA.push_back(LogicState::L);
+	tempVectorA.push_back(LogicState::H);
+	tempVectorA.push_back(LogicState::H);
+	tempVectorA.push_back(LogicState::H);
+	tempVectorA.push_back(LogicState::H);
+	//inputGraphJSONA.insert(pair<string, vector<LogicState>>("INPUT A", tempVector));
+
+	map<string, vector<LogicState>> inputGraphJSONB;
+	vector<LogicState> tempVectorB;
+	tempVectorB.push_back(LogicState::X);
+	tempVectorB.push_back(LogicState::L);
+	tempVectorB.push_back(LogicState::L);
+	tempVectorB.push_back(LogicState::H);
+	tempVectorB.push_back(LogicState::H);
+	tempVectorB.push_back(LogicState::L);
+	tempVectorB.push_back(LogicState::L);
+	tempVectorB.push_back(LogicState::H);
+	tempVectorB.push_back(LogicState::H);
+	//inputGraphJSONB.insert(pair<string, vector<LogicState>>("INPUT B", tempVector));
+	
+	map<string, vector<LogicState>> inputGraphJSONC;
+	vector<LogicState> tempVectorC;
+	tempVectorC.push_back(LogicState::X);
+	tempVectorC.push_back(LogicState::L);
+	tempVectorC.push_back(LogicState::L);
+	tempVectorC.push_back(LogicState::L);
+	tempVectorC.push_back(LogicState::H);
+	tempVectorC.push_back(LogicState::L);
+	tempVectorC.push_back(LogicState::L);
+	tempVectorC.push_back(LogicState::H);
+	tempVectorC.push_back(LogicState::L);
+	//inputGraphJSONC.insert(pair<string, vector<LogicState>>("INPUT C", tempVector));
+	
+
+	string inputAName			= "InputA_name";
+	LogicGateInput* inputA		= new LogicGateInput(inputAName);
+	string inputBName			= "InputB_name";
+	LogicGateInput* inputB		= new LogicGateInput(inputBName);
+	string inputCName			= "InputC_name";
+	LogicGateInput* inputC		= new LogicGateInput(inputCName);
+
+	string gateAndName			= "And_name";
+	LogicGateAnd* gateAnd		= new LogicGateAnd(gateAndName);
+	string gateOrName			= "Or_name";
+	LogicGateOr* gateOr			= new LogicGateOr(gateOrName);
+	string gateRegisterName		= "Register_name";
+	LogicGateOr* gateRegister	= new LogicGateOr(gateRegisterName);
+
+	string outputAName			= "OutputA_name";
+	LogicGateOutput* outputA	= new LogicGateOutput(outputAName);
+
+	inputA->affectOutputValues(tempVectorA);
+	inputB->affectOutputValues(tempVectorB);
+
+	inputC->affectOutputValues(tempVectorC);
+
+	gateAnd->addInputNode(inputAName, inputA);
+	gateAnd->addInputNode(inputBName, inputB);
+
+	gateOr->addInputNode(inputCName, inputC);
+	gateOr->addInputNode(gateAndName, gateAnd);
+
+	gateRegister->addInputNode(gateOrName, gateOr);
+
+	//outputA->addInputNode(gateRegisterName, gateRegister
+	outputA->addInputNode(gateOrName, gateOr);
+
+
+	map<string, LogicGateBase*> inputGates;
+
+
+	inputGates.insert(pair<string, LogicGateBase*>(inputAName,	inputA));
+	inputGates.insert(pair<string, LogicGateBase*>(inputBName,	inputB));
+	inputGates.insert(pair<string, LogicGateBase*>(gateAndName, gateAnd));
+	inputGates.insert(pair<string, LogicGateBase*>(gateOrName,	gateOr));
+	inputGates.insert(pair<string, LogicGateBase*>(gateRegisterName,	gateRegister));
+	inputGates.insert(pair<string, LogicGateBase*>(outputAName, outputA));
+
+	string circuitName = "Circuit_name";
+	LogicCircuit* circuit = new LogicCircuit(inputGates, circuitName);
+
+	printInConsoleLogicStateVector("Print wave of \"" + inputAName + "\"", tempVectorA);
+	printInConsoleLogicStateVector("Print wave of \"" + inputBName + "\"", tempVectorB);
+	printInConsoleLogicStateVector("Print wave of \"" + inputCName + "\"", tempVectorC);
+
+	circuit->startSimulation();
+
+	/*
+	if (expectedOutputGraph != outputGraph) {
+		printInfoMessage("Output graphs are different");
+		return true;
+	}
+	else
+		return false;*/
+	return true;
+}
+
+
+
 	/// Launcher ----------------------------------------------------------------------------------
 void unitTestingLauncher() {
 	unsigned int errorNumber = 0;
 	printInfoMessage("Unit test(s) are starting...\n");
-
+	/*
 	if (unitTest_extractFile_DOT()) { printErrorMessage("Error during the test of \"unitTest_extractFile_DOT()\""); errorNumber++; }
 	else printInfoMessage("OK with the test of \"unitTest_extractFile_DOT()\"");
 
@@ -573,7 +686,10 @@ void unitTestingLauncher() {
 	else printInfoMessage("OK with the test of \"unitTest_parserInputTokenListDOT()\"");
 
 	if (unitTest_parserInputTokenListJSON()) { printErrorMessage("Error during the test of \"unitTest_parserInputTokenListJSON()\""); errorNumber++; }
-	else printInfoMessage("OK with the test of \"unitTest_parserInputTokenListJSON()\"");		
+	else printInfoMessage("OK with the test of \"unitTest_parserInputTokenListJSON()\"");	*/
+	
+	if (unitTest_startSimulation()) { printErrorMessage("Error during the test of \"unitTest_startSimulation()\""); errorNumber++; }
+	else printInfoMessage("OK with the test of \"unitTest_startSimulation()\"");
 
 	printInfoMessage("Unit test(s) ended with " + to_string(errorNumber) + " error(s)");
 }

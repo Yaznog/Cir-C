@@ -85,6 +85,14 @@ void printInConsoleMapWave(const string& startMessage, const map<string, vector<
     cout << endl;
 }
 
+
+void printInConsoleLogicStateVector(const string& startMessage, const vector<LogicState> inputLogicStateVector) {
+    cout << BOLD << "\n" << startMessage << "\n" << RESET << endl;
+    cout << "    \"" << vectorLogicStateToString(inputLogicStateVector) << "\"" << endl;
+    cout << endl;
+}
+
+
 void printInvisibleCharInString(const string& inputString) {
     cout << BOLD << "\n" << "printInvisibleCharInString:" << "\n" << RESET << endl;
     for (auto listElement : inputString) {
