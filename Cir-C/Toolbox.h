@@ -57,12 +57,12 @@ int inputArgumentParser(int argc, char* argv[], string& inputFilePathJSON, strin
 }
 
 
-unsigned int listsOfTokenAreEqual(list<Token>& list1, list<Token>& list2) {
+int listsOfTokenAreEqual(list<Token>& list1, list<Token>& list2) {
     auto it1 = list1.begin();
     auto it2 = list2.begin();
 
     if(list1.size() != list2.size())
-        return 1;
+        return -1;
 
     while (it1 != list1.end() && it2 != list2.end())
     {
@@ -74,6 +74,21 @@ unsigned int listsOfTokenAreEqual(list<Token>& list1, list<Token>& list2) {
     }
     return 0;
 }
+
+
+int stringsAreEqual(const string& inputString1, const string& inputString2) {
+    if (inputString1.size() != inputString1.size())
+        return -1;
+
+    int lineNb = 1;
+
+    for (int i = 0; i < inputString1.size(); i++) {
+        if (inputString1[i] == '\n') lineNb++;
+        if (inputString1[i] != inputString2[i]) return lineNb;
+    }
+    return 0;
+}
+
 
 void cleanListOfToken(list<Token>& inputList) {
     inputList.erase(inputList.begin(), inputList.end());

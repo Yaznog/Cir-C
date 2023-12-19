@@ -2,28 +2,12 @@
   "signal": [
     {
       "name": "INPUT A",
-      "wave": "l..h."
+      "wave": "lhplnhp01xzlP.HLHN.L|"
     },
     {
-      "wave": "l..h.",
-      "name": "INPUT B"
-    },
-    {
-      //"name": "INPUT C",
-      "name": "INPUT D",
-      "wave": "l..h."
-    },/*
-    {
-      "name": "INPUT E",
-      "wave": "l..h."
-    },*/
-    {
-      'name': 'INPUT F',
-      'wave': 'l..h.'
-    },
-    {
-      name: "INPUT G",
-      wave: "l..h."
+      "name": "INPUT B",
+      "wave": "==.=..=...",
+      "data": [ "txt1", "txt2", "txt3", "txt4" ]
     }
   ]
 }

@@ -43,11 +43,20 @@ bool unitTest_extractFile_JSON() {
 	const string expectedOutputString = "{\n  \"signal\": [\n    {\n      \"name\": \"INPUT A\",\n      \"wave\": \"l..h.\"\n    },\n    {\n      \"name\": \"INPUT B\",\n      \"wave\": \"l..h.\"\n    },\n    {\n      //\"name\": \"INPUT C\",\n      \"name\": \"INPUT D\",\n      \"wave\": \"l..h.\"\n    },/*\n    {\n      \"name\": \"INPUT E\",\n      \"wave\": \"l..h.\"\n    },*/\n    {\n      \'name\': \'INPUT F\',\n      \'wave\': \'l..h.\'\n    },\n    {\n      name: \"INPUT G\",\n      wave: \"l..h.\"\n    }\n  ]\n}\n";
 		
 	extractFile(inputString, outputString);	
-
+	
+	unsigned int lineNumber;
+	if ((lineNumber = stringsAreEqual(expectedOutputString, outputString)) != 0) {
+		printDevMessage("Strings are different at line " + to_string(lineNumber));
+		return true;
+	}
+	else {
+		return false;
+	}
+	/*
 	if (expectedOutputString == outputString)
 		return false;
 	else
-		return true;
+		return true;*/
 }
 
 	/// Lexer.h -----------------------------------------------------------------------------------
@@ -163,6 +172,9 @@ bool unitTest_lexingInputStringDOT() {
 	//createFile("expectedOutputString.txt", expectedOutputString);
 	//createFile("outputString.txt", outputString);
 
+	//printInvisibleCharInString(expectedOutputString);
+	//printInvisibleCharInString(outputString);
+
 	unsigned int lineNumber;
 	if ((lineNumber = listsOfTokenAreEqual(outputListToken, expectedOutputListToken)) != 0) {
 		printErrorMessage("Lists of Token are different at line " + to_string(lineNumber));
@@ -232,7 +244,7 @@ bool unitTest_lexingInputStringJSON() {
 	expectedOutputListToken.push_back(Token(RIGHTCURLY,		"}",			15));
 	expectedOutputListToken.push_back(Token(COMMA,			",",			15));
 
-	expectedOutputListToken.push_back(Token(COMMENT,		"/*{\n      \"name\": \"INPUT E\",\n      \"wave\": \"l..h.\"\n    }*/", 19));
+	expectedOutputListToken.push_back(Token(COMMENT,		"/*\n    {\n      \"name\": \"INPUT E\",\n      \"wave\": \"l..h.\"\n    }*/", 19));
 	/*
 	expectedOutputListToken.push_back(Token(LEFTCOMMENT,	"/*",			16));
 	expectedOutputListToken.push_back(Token(LEFTCURLY,		"{",			16));
@@ -295,7 +307,7 @@ bool unitTest_lexingInputStringJSON() {
 
 	//printDevMessage("outputListToken " + to_string(outputListToken.size()));
 	//printDevMessage("expectedOutputListToken " + to_string(expectedOutputListToken.size()));
-
+	
 	unsigned int lineNumber;
 	if ((lineNumber = listsOfTokenAreEqual(outputListToken, expectedOutputListToken)) != 0) {
 		printErrorMessage("Lists of Token are different at line " + to_string(lineNumber));

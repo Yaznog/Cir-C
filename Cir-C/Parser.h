@@ -61,7 +61,7 @@ bool parserJSONKeywordSignalGetNameWave(list<Token>& listToken, map<string, vect
     int tempCounter = 0;
     string name = "";
     vector<LogicState> logicState;
-    logicState.push_back(X);    
+    logicState.push_back(X);          
 
     while (itListToken != listToken.end() && !endWhileFlag) {
             if ((*itListToken).getType() == COMMENT) { itListToken++; continue; }
@@ -107,9 +107,20 @@ bool parserJSONKeywordSignalGetNameWave(list<Token>& listToken, map<string, vect
             }
             else if ((*itListToken).getValue() == "\"data\"") {
                 printWarningMessage("In JSON parser, line " + to_string((*itListToken).getLine()) + +", " + (*itListToken).getTypeString() + " \"" + (*itListToken).getValue() + "\" not implemented");
+                do {
+                    itListToken++;
+                    if (itListToken == listToken.end()) break;
+                    if ((*itListToken).getType() == KEYWORD) break;                    
+                } while (itListToken != listToken.end());
+
             }
             else {
                 printWarningMessage("In JSON parser, line " + to_string((*itListToken).getLine()) + +", " + "unexpected " + (*itListToken).getTypeString() + " \"" + (*itListToken).getValue() + "\"");
+                do {
+                    itListToken++;
+                    if (itListToken == listToken.end()) break;
+                    if ((*itListToken).getType() == KEYWORD) break;
+                } while (itListToken != listToken.end());
             }
         //itListToken++;
     }
@@ -127,6 +138,8 @@ bool parserJSONKeywordSignal(list<Token>& listToken, map<string, vector<LogicSta
     bool endWhileFlag = false;
     list<Token> subListToken;
     int tempCounter = 0;
+
+    //printInConsoleListToken("listToken: ", listToken);
         
     while (itListToken != listToken.end() && !endWhileFlag) {
         if ((*itListToken).getType() == COMMENT) { itListToken++; continue; }
@@ -168,6 +181,8 @@ bool parserInputTokenListJSON(list<Token>& listToken, map<string, vector<LogicSt
     bool endWhileFlag = false;
     list<Token> subListToken;
     int tempCounter = 0;
+
+    //printInConsoleListToken("listToken: ", listToken);
 
     while((*itListToken).getType() == COMMENT) itListToken++;
 
@@ -221,13 +236,17 @@ bool parserInputTokenListJSON(list<Token>& listToken, map<string, vector<LogicSt
         }
 
         //RIGHTCURLY
-
+        
 
         itListToken++;
-        if (itListToken != listToken.end()) {                
-            if ((*itListToken).getType() != COMMA) { printErrorMessage("In JSON parser, line " + to_string((*itListToken).getLine()) + +", " + "need a COMMA"); return true; }
-            itListToken++;
-            if (itListToken == listToken.end()) { printErrorMessage("In JSON parser, line " + to_string((*itListToken).getLine()) + +", " + "unexpected COMMA"); return true; }
+        if (itListToken != listToken.end()) {       
+            if ((*itListToken).getType() != RIGHTCURLY) {
+                if ((*itListToken).getType() != COMMA) { printErrorMessage("In JSON parser, line " + to_string((*itListToken).getLine()) + +", " + "need a COMMA"); return true; }
+                itListToken++;
+                if (itListToken == listToken.end()) { printErrorMessage("In JSON parser, line " + to_string((*itListToken).getLine()) + +", " + "unexpected COMMA"); return true; }
+            }
+            else if ((itListToken++) == listToken.end())
+                return false;
         }
         //itListToken++;
     }

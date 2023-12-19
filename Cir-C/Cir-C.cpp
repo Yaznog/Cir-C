@@ -41,7 +41,7 @@ int main(int argc, char* argv[])
 
     string extractedFileDOT = "";
     extractFile(inputFilePathDOT, extractedFileDOT);
-    //printInConsoleFileDOT(extractedFileDOT);
+    //printInConsoleFileDOT(extractedFileDOT);    
 
         /// Lexer processing ----------------------------------------------------------------------
 
@@ -57,8 +57,8 @@ int main(int argc, char* argv[])
                         
     map<string, vector<LogicState>> graphJSON;       
     parserInputTokenListJSON(listTokenJSON, graphJSON);
-    printInConsoleMapWave("Print outputGraph:", graphJSON);
-       
+    printInConsoleMapWave("Print outputGraph:", graphJSON);        
+
         /// End of the program --------------------------------------------------------------------
 
     printInConsoleStopDownpMessage();

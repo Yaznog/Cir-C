@@ -266,18 +266,26 @@ void splitString(const string& inputString, list<Token>& listToken, const string
                 else if (inputString[index + 1] == '*') {
                     currentString += inputString[index + 1];
                     index++;
+                    /*
+                    if (inputString[index + 1] == '\0') {
+                        if (inputString[index + 1] == '\n')
+                            lineNumber++;
+                    }*/
 
                     for (index = index + 1; index < inputString.length() - 2; index++) {
                         currentString += inputString[index];
-                        if (inputString[index + 1] == '\n')
-                            lineNumber++;
+                        //if (inputString[index + 1] == '\n')
+                            //lineNumber++;
                         if (inputString[index + 1] == '*' && inputString[index + 2] == '/') {
                             currentString += inputString[index + 1];
                             index++;
                             currentString += inputString[index + 1];
-                            index++;
+                            //index++;
                             break;
                         }
+                    }
+                    for (auto currentChar : currentString) {
+                        if (currentChar == '\n') lineNumber++;
                     }
 
                     checkStringAndAddTokenInList(currentString, listToken, lineNumber, fileExtension);

@@ -85,6 +85,40 @@ void printInConsoleMapWave(const string& startMessage, const map<string, vector<
     cout << endl;
 }
 
+void printInvisibleCharInString(const string& inputString) {
+    cout << BOLD << "\n" << "printInvisibleCharInString:" << "\n" << RESET << endl;
+    for (auto listElement : inputString) {
+        switch (listElement) {
+        case '\n':
+            cout << "\\n";
+            break;
+        case '\r':
+            cout << "\\r";
+            break;
+        case '\b':
+            cout << "\\b";
+            break;
+        case '\t':
+            cout << "\\t";
+            break;
+        case '\a':
+            cout << "\\a";
+            break;
+        case '\v':
+            cout << "\\v";
+            break;
+        case '\0':
+            cout << "\\0";
+            break;
+        case ' ':
+            cout << "~";
+            break;
+        }
+        cout << listElement;
+    }
+    cout << endl << endl;
+}
+
 
 inline void printErrorMessage(const string& inputString)    { cout << BOLD << RED       << setw(9) << "Error: "     << RESET << inputString << endl; }
 inline void printWarningMessage(const string& inputString)  { cout << BOLD << MAGENTA   << setw(9) << "Warning: "   << RESET << inputString << endl; }
