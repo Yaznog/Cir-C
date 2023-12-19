@@ -7,8 +7,11 @@
 #include <ctime>
 #include <list>
 #include <iomanip>
+#include <map>
+#include <vector>
 
 #include "Token.h"
+#include "LogicGate.h"
 
 #define RESET       "\033[0m"
 #define BLACK       "\033[30m"
@@ -53,18 +56,69 @@ void printInConsoleFileJSON(const string& inputString) {
 
 
 void printInConsoleListString(const string& startMessage, const list<string>& inputStringList) {
-    cout << startMessage << endl;
+    cout << BOLD << startMessage << endl;
     for (auto listElement : inputStringList)
         cout << listElement << endl;
 }
 
 
 void printInConsoleListToken(const string& startMessage, const list<Token>& inputListToken) {
-    cout << "\n" << startMessage << "\n" << endl;
+    cout << BOLD << "\n" << startMessage << "\n" << RESET << endl;
     for (auto listElement : inputListToken)
         cout << left << "Value: \"" << setw(35) << (listElement.getValue() + "\"") << left << "Type: " << setw(15) << listElement.getTypeString() << left << "Line: " << setw(5) << to_string(listElement.getLine()) << endl << "---------------------------------------------------------------------------" << endl;
     cout << endl;
 }
+
+
+string vectorLogicStateToString(vector<LogicState> inputVector) {
+    string outputString = "";
+    for (auto listElement : inputVector)
+        outputString += convertLogicStateToString(listElement);
+    return outputString;
+}
+
+
+void printInConsoleMapWave(const string& startMessage, const map<string, vector<LogicState>> inputMapWave) {
+    cout << BOLD << "\n" << startMessage << "\n" << RESET << endl;
+    for (auto listElement : inputMapWave)
+        cout << left << "Key: \"" << setw(20) << (listElement.first + "\"") << left << "Value: " << setw(15) << vectorLogicStateToString(listElement.second) << endl << "---------------------------------------------------------------------------" << endl;
+    cout << endl;
+}
+
+void printInvisibleCharInString(const string& inputString) {
+    cout << BOLD << "\n" << "printInvisibleCharInString:" << "\n" << RESET << endl;
+    for (auto listElement : inputString) {
+        switch (listElement) {
+        case '\n':
+            cout << "\\n";
+            break;
+        case '\r':
+            cout << "\\r";
+            break;
+        case '\b':
+            cout << "\\b";
+            break;
+        case '\t':
+            cout << "\\t";
+            break;
+        case '\a':
+            cout << "\\a";
+            break;
+        case '\v':
+            cout << "\\v";
+            break;
+        case '\0':
+            cout << "\\0";
+            break;
+        case ' ':
+            cout << "~";
+            break;
+        }
+        cout << listElement;
+    }
+    cout << endl << endl;
+}
+
 
 inline void printErrorMessage(const string& inputString)    { cout << BOLD << RED       << setw(9) << "Error: "     << RESET << inputString << endl; }
 inline void printWarningMessage(const string& inputString)  { cout << BOLD << MAGENTA   << setw(9) << "Warning: "   << RESET << inputString << endl; }

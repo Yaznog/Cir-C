@@ -12,11 +12,11 @@
       //"name": "INPUT C",
       "name": "INPUT D",
       "wave": "l..h."
-    },
-    /*{
+    },/*
+    {
       "name": "INPUT E",
       "wave": "l..h."
-    }*/
+    },*/
     {
       'name': 'INPUT F',
       'wave': 'l..h.'

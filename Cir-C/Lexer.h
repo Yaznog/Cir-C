@@ -3,6 +3,7 @@
 
 #include "Token.h"
 #include "MessageManager.h"
+#include "Toolbox.h"
 
 #include <iostream>
 #include <string>
@@ -76,7 +77,7 @@ tokenType getStringTypeDOT(const string& inputString) {
     }
     else if (inputString == "->")
         return AFFECTATION;
-    else if (inputString[0] == '#' || (inputString[0] == '/' && inputString[1] == '/'))
+    else if (inputString[0] == '#' || (inputString[0] == '/' && inputString[1] == '/') || (inputString[0] == '/' && inputString[1] == '*' ))
         return COMMENT;
     //else if (inputString == "//")
     //    return COMMENT;
@@ -91,9 +92,6 @@ tokenType getStringTypeDOT(const string& inputString) {
     }
     else if (find(keywordArrayDOT, keywordArrayDOT + sizeof(keywordArrayDOT) / sizeof(int), inputString) != (keywordArrayDOT + sizeof(keywordArrayDOT) / sizeof(int)))
         return KEYWORD;
-    /*
-    else if (inputString == "digraph" || inputString == "label" || inputString == "shape" || inputString == "box")
-        return KEYWORD;*/
     else 
         return SYMBOLE;
     return UNKNOWN;
@@ -134,7 +132,9 @@ tokenType getStringTypeJSON(const string& inputString) {
     }
     else if (inputString == "->")
         return AFFECTATION;
-    else if (inputString[0] == '/' && inputString[1] == '/')
+    //else if (inputString[0] == '/' && inputString[1] == '/')
+    //    return COMMENT;
+    else if (inputString[0] == '#' || (inputString[0] == '/' && inputString[1] == '/') || (inputString[0] == '/' && inputString[1] == '*'))
         return COMMENT;
     else if (inputString == "/*")
         return LEFTCOMMENT;
@@ -265,6 +265,29 @@ void splitString(const string& inputString, list<Token>& listToken, const string
                 }
                 else if (inputString[index + 1] == '*') {
                     currentString += inputString[index + 1];
+                    index++;
+                    /*
+                    if (inputString[index + 1] == '\0') {
+                        if (inputString[index + 1] == '\n')
+                            lineNumber++;
+                    }*/
+
+                    for (index = index + 1; index < inputString.length() - 2; index++) {
+                        currentString += inputString[index];
+                        //if (inputString[index + 1] == '\n')
+                            //lineNumber++;
+                        if (inputString[index + 1] == '*' && inputString[index + 2] == '/') {
+                            currentString += inputString[index + 1];
+                            index++;
+                            currentString += inputString[index + 1];
+                            //index++;
+                            break;
+                        }
+                    }
+                    for (auto currentChar : currentString) {
+                        if (currentChar == '\n') lineNumber++;
+                    }
+
                     checkStringAndAddTokenInList(currentString, listToken, lineNumber, fileExtension);
                     index++;
                 }
@@ -277,7 +300,7 @@ void splitString(const string& inputString, list<Token>& listToken, const string
         
         case '*':
             checkStringAndAddTokenInList(currentString, listToken, lineNumber, fileExtension);
-            currentString += inputString[index];
+            currentString += inputString[index];            
             if (index < inputString.length() - 1) {
                 if (inputString[index + 1] == '/') {
                     currentString += inputString[index + 1];

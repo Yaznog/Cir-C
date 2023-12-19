@@ -2,7 +2,10 @@
 #include "FileManager.h"
 #include "MessageManager.h"
 #include "Lexer.h"
+#include "Parser.h"
 #include "Token.h"
+#include "LogicGate.h"
+#include "Simulator.h"
 #include "UnitTestingRoom.h"
 
 #include <iostream>
@@ -18,6 +21,8 @@ int main(int argc, char* argv[])
         /// Beginning of the program --------------------------------------------------------------
     printInConsoleStartUpMessage();
 
+    printDevMessage("branch devYaznog\n");
+
     unitTestingLauncher(); // Unit test(s)
 
     string inputFilePathJSON = "";
@@ -26,6 +31,7 @@ int main(int argc, char* argv[])
     inputArgumentParser(argc, argv, inputFilePathJSON, inputFilePathDOT);
 
         /// Input files reading -------------------------------------------------------------------
+
     printInfoMessage("Input JSON file path: \"" + inputFilePathJSON + "\"");
     printInfoMessage("Input DOT file path: \"" + inputFilePathDOT + "\"");
                    
@@ -35,7 +41,7 @@ int main(int argc, char* argv[])
 
     string extractedFileDOT = "";
     extractFile(inputFilePathDOT, extractedFileDOT);
-    //printInConsoleFileDOT(extractedFileDOT);
+    //printInConsoleFileDOT(extractedFileDOT);    
 
         /// Lexer processing ----------------------------------------------------------------------
 
@@ -45,9 +51,16 @@ int main(int argc, char* argv[])
                                 
     list<Token> listTokenDOT;
     lexingInputStringDOT(extractedFileDOT, listTokenDOT);
-    //printInConsoleListToken("Print listTokenDOT:", listTokenDOT);          
-                  
+    //printInConsoleListToken("Print listTokenDOT:", listTokenDOT);         
+
+        /// Parser processing ---------------------------------------------------------------------
+                        
+    map<string, vector<LogicState>> graphJSON;       
+    parserInputTokenListJSON(listTokenJSON, graphJSON);
+    printInConsoleMapWave("Print outputGraph:", graphJSON);        
+
         /// End of the program --------------------------------------------------------------------
+
     printInConsoleStopDownpMessage();
 
     return 0;

@@ -1,0 +1,13 @@
+{
+  "signal": [
+    {
+      "name": "INPUT A",
+      "wave": "lhplnhp01xzlP.HLHN.L|"
+    },
+    {
+      "name": "INPUT B",
+      "wave": "==.=..=...",
+      "data": [ "txt1", "txt2", "txt3", "txt4" ]
+    }
+  ]
+}
