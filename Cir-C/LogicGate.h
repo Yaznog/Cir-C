@@ -9,8 +9,12 @@
 #include <map>
 #include <vector>
 
-
 using namespace std;
+
+inline void printErrorMessage(const string& inputString);
+inline void printWarningMessage(const string& inputString);
+inline void printInfoMessage(const string& inputString);
+inline void printDevMessage(const string& inputString);
 
 enum class LogicState {
     H,
@@ -80,13 +84,13 @@ public:
         unsigned int previousSize = getSizeOfOutputValues();
         this->m_outputValues.resize(size);
         if (size > previousSize) {
-            for (int index = previousSize; index < size; index++) {
+            for (unsigned int index = previousSize; index < size; index++) {
                 m_outputValues[index] = m_outputValues[index - 1];
             }
         }
         
     };
-    inline unsigned int getSizeOfOutputValues()     const   { return this->m_outputValues.size(); };
+    inline unsigned int getSizeOfOutputValues()     const   { return (unsigned int)this->m_outputValues.size(); };
 
     virtual inline string toString() = 0;
            
@@ -108,16 +112,14 @@ public:
 
     inline void addInputNode(string& inputNodeName, LogicGateBase* inputNodeAdd) { m_inputNodes.insert({ inputNodeName, inputNodeAdd }); }
 
-    inline unsigned int getNumberOfInputNode() const { return m_inputNodes.size(); };
+    inline unsigned int getNumberOfInputNode() const { return (unsigned int)m_inputNodes.size(); };
 
     inline string toString() { return ("And gate \"" + this->getName() + "\""); }; 
 
     LogicState computeOutput(unsigned int index) {
         if (index <= this->m_lastComputedIndex) return m_outputValues[index];
-        if (m_inputNodes.size() < 2) { //printErrorMessage("Not enought input node for door \"" + this->getName() + "\""); 
-            return LogicState::Z; }
-        if (m_deltaCycleCounter >= m_deltaCycleMax) { //printWarningMessage("Delta cycle max exceeds in the door \"" + this->getName() + "\""); 
-            return LogicState::X; }
+        if (m_inputNodes.size() < 2) { printErrorMessage("Not enought input node for door \"" + this->getName() + "\""); return LogicState::Z; }
+        if (m_deltaCycleCounter >= m_deltaCycleMax) { printWarningMessage("Delta cycle max exceeds in the door \"" + this->getName() + "\""); return LogicState::X; }
         m_deltaCycleCounter++;
 
         LogicState tempValue = LogicState::H; // 'H' logic state is the neutral element for "And" door
@@ -144,10 +146,8 @@ public:
 
     LogicState computeOutput(unsigned int index) {
         if (index <= this->m_lastComputedIndex) return m_outputValues[index];
-        if (m_inputNodes.size() < 2) { //printErrorMessage("Not enought input node for door \"" + this->getName() + "\""); 
-            return LogicState::Z; }
-        if (m_deltaCycleCounter >= m_deltaCycleMax) { //printWarningMessage("Delta cycle max exceeds in the door \"" + this->getName() + "\""); 
-            return LogicState::X; }
+        if (m_inputNodes.size() < 2) { printErrorMessage("Not enought input node for door \"" + this->getName() + "\""); return LogicState::Z; }
+        if (m_deltaCycleCounter >= m_deltaCycleMax) { printWarningMessage("Delta cycle max exceeds in the door \"" + this->getName() + "\""); return LogicState::X; }
         m_deltaCycleCounter++;
 
         LogicState tempValue = LogicState::L; // 'L' logic state is the neutral element for "Or" door
@@ -174,10 +174,8 @@ public:
 
     LogicState computeOutput(unsigned int index) {
         if (index <= this->m_lastComputedIndex) return m_outputValues[index];
-        if (m_inputNodes.size() < 2) { //printErrorMessage("Not enought input node for door \"" + this->getName() + "\""); 
-            return LogicState::Z; }
-        if (m_deltaCycleCounter >= m_deltaCycleMax) { //printWarningMessage("Delta cycle max exceeds in the door \"" + this->getName() + "\""); 
-            return LogicState::X; }
+        if (m_inputNodes.size() < 2) { printErrorMessage("Not enought input node for door \"" + this->getName() + "\""); return LogicState::Z; }
+        if (m_deltaCycleCounter >= m_deltaCycleMax) { printWarningMessage("Delta cycle max exceeds in the door \"" + this->getName() + "\""); return LogicState::X; }
         m_deltaCycleCounter++;
 
         LogicState tempValue = LogicState::L; // 'L' logic state is the neutral element for "Xor" door
@@ -204,13 +202,11 @@ public:
 
     LogicState computeOutput(unsigned int index) {
         if (index <= this->m_lastComputedIndex) return m_outputValues[index];
-        if (m_inputNodes.size() != 1) { //printErrorMessage("Need only one input node for door \"" + this->getName() + "\""); 
-            return LogicState::Z; }
-        if (m_deltaCycleCounter >= m_deltaCycleMax) { //printWarningMessage("Delta cycle max exceeds in the door \"" + this->getName() + "\""); 
-            return LogicState::X; }
+        if (m_inputNodes.size() != 1) { printErrorMessage("Need only one input node for door \"" + this->getName() + "\""); return LogicState::Z; }
+        if (m_deltaCycleCounter >= m_deltaCycleMax) { printWarningMessage("Delta cycle max exceeds in the door \"" + this->getName() + "\""); return LogicState::X; }
         m_deltaCycleCounter++;
 
-        LogicState tempValue;
+        LogicState tempValue = LogicState::X;
         for (auto element : m_inputNodes) tempValue = ~element.second->computeOutput(index);
 
         m_outputValues[index] = tempValue;
@@ -246,13 +242,11 @@ public:
 
     LogicState computeOutput(unsigned int index) {
         if (index <= this->m_lastComputedIndex) return m_outputValues[index];
-        if (m_inputNodes.size() != 1) { //printErrorMessage("Need only one input node for door \"" + this->getName() + "\""); 
-            return LogicState::Z; }
-        if (m_deltaCycleCounter >= m_deltaCycleMax) { //printWarningMessage("Delta cycle max exceeds in the door \"" + this->getName() + "\""); 
-            return LogicState::X; }
+        if (m_inputNodes.size() != 1) { printErrorMessage("Need only one input node for door \"" + this->getName() + "\""); return LogicState::Z; }
+        if (m_deltaCycleCounter >= m_deltaCycleMax) { printWarningMessage("Delta cycle max exceeds in the door \"" + this->getName() + "\""); return LogicState::X; }
         m_deltaCycleCounter++;
 
-        LogicState tempValue;
+        LogicState tempValue = LogicState::X;
         for (auto element : m_inputNodes) tempValue = element.second->computeOutput(index);
 
         m_outputValues[index] = tempValue;
@@ -276,13 +270,11 @@ public:
 
     LogicState computeOutput(unsigned int index) {
         if (index <= this->m_lastComputedIndex) return m_outputValues[index];
-        if (m_inputNodes.size() != 1) { //printErrorMessage("Need only one input node for door \"" + this->getName() + "\""); 
-            return LogicState::Z; }
-        if (m_deltaCycleCounter >= m_deltaCycleMax) { //printWarningMessage("Delta cycle max exceeds in the door \"" + this->getName() + "\""); 
-            return LogicState::X; }
+        if (m_inputNodes.size() != 1) { printErrorMessage("Need only one input node for door \"" + this->getName() + "\""); return LogicState::Z; }
+        if (m_deltaCycleCounter >= m_deltaCycleMax) { printWarningMessage("Delta cycle max exceeds in the door \"" + this->getName() + "\""); return LogicState::X; }
         m_deltaCycleCounter++;
 
-        LogicState tempValue;
+        LogicState tempValue = LogicState::X;
         for (auto element : m_inputNodes) tempValue = element.second->computeOutput(index - 1);
 
         m_outputValues[index] = tempValue;

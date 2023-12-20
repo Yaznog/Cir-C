@@ -13,6 +13,16 @@
 
 using namespace std;
 
+enum GateType {
+    INPUT,
+    OUTPUT,
+    AND,
+    OR,
+    XOR,
+    NOT,
+    REGISTER
+};
+
 
 bool parserInputTokenListDOT(list<Token>& listToken, map<string, LogicGateBase*>& outputGraph) {
 

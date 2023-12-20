@@ -27,9 +27,9 @@
 
 using namespace std;
 
+
 void printInConsoleStartUpMessage() {
     time_t startTime = chrono::system_clock::to_time_t(chrono::system_clock::now());
-
     cout << BOLD << "################################################################################" << RESET << endl;
     cout << BOLD << "Welcome to Cir-C simulator !!!" << RESET << endl;
     cout << BOLD << ctime(&startTime) << RESET << endl;

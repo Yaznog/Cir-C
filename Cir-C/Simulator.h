@@ -31,7 +31,7 @@ public:
     };
 
     void startSimulation() {
-        for (int index = 1; index < m_maxOutputValues; index++) computeOutput(index);
+        for (unsigned int index = 1; index < m_maxOutputValues; index++) computeOutput(index);
         for (auto element : m_outputs) printInConsoleLogicStateVector("Print wave of \"" + element.first + "\"", element.second->getAllOutput());        
     };
 

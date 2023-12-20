@@ -559,7 +559,13 @@ bool unitTest_parserInputTokenListJSON() {
 
 bool unitTest_startSimulation() {
 
-	map<string, vector<LogicState>> inputGraphJSONA;	
+		// JSON input part ----------------------------------------------------
+
+	string inputAName = "InputA_name";
+	string inputBName = "InputB_name";
+	string inputCName = "InputC_name";
+
+	map<string, vector<LogicState>> inputGraphJSON;	
 
 	vector<LogicState> tempVectorA;
 	tempVectorA.push_back(LogicState::X);
@@ -571,9 +577,8 @@ bool unitTest_startSimulation() {
 	tempVectorA.push_back(LogicState::H);
 	tempVectorA.push_back(LogicState::H);
 	tempVectorA.push_back(LogicState::H);
-	//inputGraphJSONA.insert(pair<string, vector<LogicState>>("INPUT A", tempVector));
+	inputGraphJSON.insert(pair<string, vector<LogicState>>("inputAName", tempVectorA));
 
-	map<string, vector<LogicState>> inputGraphJSONB;
 	vector<LogicState> tempVectorB;
 	tempVectorB.push_back(LogicState::X);
 	tempVectorB.push_back(LogicState::L);
@@ -584,9 +589,8 @@ bool unitTest_startSimulation() {
 	tempVectorB.push_back(LogicState::L);
 	tempVectorB.push_back(LogicState::H);
 	tempVectorB.push_back(LogicState::H);
-	//inputGraphJSONB.insert(pair<string, vector<LogicState>>("INPUT B", tempVector));
+	inputGraphJSON.insert(pair<string, vector<LogicState>>("inputBName", tempVectorB));
 	
-	map<string, vector<LogicState>> inputGraphJSONC;
 	vector<LogicState> tempVectorC;
 	tempVectorC.push_back(LogicState::X);
 	tempVectorC.push_back(LogicState::L);
@@ -597,31 +601,92 @@ bool unitTest_startSimulation() {
 	tempVectorC.push_back(LogicState::L);
 	tempVectorC.push_back(LogicState::H);
 	tempVectorC.push_back(LogicState::L);
-	//inputGraphJSONC.insert(pair<string, vector<LogicState>>("INPUT C", tempVector));
+	inputGraphJSON.insert(pair<string, vector<LogicState>>("inputCName", tempVectorC));
 	
+	printInConsoleMapWave("Print input waves:", inputGraphJSON);
 
-	string inputAName			= "InputA_name";
-	LogicGateInput* inputA		= new LogicGateInput(inputAName);
-	string inputBName			= "InputB_name";
-	LogicGateInput* inputB		= new LogicGateInput(inputBName);
-	string inputCName			= "InputC_name";
-	LogicGateInput* inputC		= new LogicGateInput(inputCName);
+		// DOT input part -----------------------------------------------------
+		
+	string gateAndName				= "And_name";
+	string gateOrName				= "Or_name";
+	string gateRegisterName			= "Register_name";
+	string outputAName				= "OutputA_name";
 
-	string gateAndName			= "And_name";
-	LogicGateAnd* gateAnd		= new LogicGateAnd(gateAndName);
-	string gateOrName			= "Or_name";
-	LogicGateOr* gateOr			= new LogicGateOr(gateOrName);
-	string gateRegisterName		= "Register_name";
-	LogicGateOr* gateRegister	= new LogicGateOr(gateRegisterName);
+	const int gateTabLength = 7;
+	string gateNameTab[gateTabLength] = { inputAName, inputBName , inputCName , gateAndName, gateOrName, gateRegisterName, outputAName };
+	GateType gateTypeTab[gateTabLength] = { INPUT, INPUT , INPUT , AND, OR, REGISTER, OUTPUT};
+	map<string, LogicGateBase*> inputGates;
 
-	string outputAName			= "OutputA_name";
-	LogicGateOutput* outputA	= new LogicGateOutput(outputAName);
+	for (int i = 0; i < gateTabLength; i++) {
+		switch (gateTypeTab[i]) {
+		case INPUT:
+			inputGates.insert(pair<string, LogicGateBase*>(gateNameTab[i], new LogicGateInput(gateNameTab[i])));
+			dynamic_cast<LogicGateInput*>(inputGates.find(gateNameTab[i])->second)->affectOutputValues(inputGraphJSON.find(gateNameTab[i])->second);
+			break;
+
+		case OUTPUT:
+			inputGates.insert(pair<string, LogicGateBase*>(gateNameTab[i], new LogicGateOutput(gateNameTab[i])));
+			break;
+
+		case AND:
+			inputGates.insert(pair<string, LogicGateBase*>(gateNameTab[i], new LogicGateAnd(gateNameTab[i])));
+			break;
+
+		case OR:
+			inputGates.insert(pair<string, LogicGateBase*>(gateNameTab[i], new LogicGateOr(gateNameTab[i])));
+			break;
+
+		case XOR:
+			inputGates.insert(pair<string, LogicGateBase*>(gateNameTab[i], new LogicGateXor(gateNameTab[i])));
+			break;
+
+		case NOT:
+			inputGates.insert(pair<string, LogicGateBase*>(gateNameTab[i], new LogicGateNot(gateNameTab[i])));
+			break;
+
+		case REGISTER:
+			inputGates.insert(pair<string, LogicGateBase*>(gateNameTab[i], new LogicGateRegister(gateNameTab[i])));
+			break;
+		}
+	}
+
+	//inputGraphJSON.find(gateNameTab[i])
+	/*
+	LogicGateInput* inputA			= new LogicGateInput(inputAName);
+	LogicGateInput* inputB			= new LogicGateInput(inputBName);
+	LogicGateInput* inputC			= new LogicGateInput(inputCName);	
+	LogicGateAnd* gateAnd			= new LogicGateAnd(gateAndName);	
+	LogicGateOr* gateOr				= new LogicGateOr(gateOrName);	
+	LogicGateRegister* gateRegister	= new LogicGateRegister(gateRegisterName);	
+	LogicGateOutput* outputA		= new LogicGateOutput(outputAName);*/
+	
+	/*
+	inputGates.insert(pair<string, LogicGateBase*>(inputAName,			inputA));
+	inputGates.insert(pair<string, LogicGateBase*>(inputBName,			inputB));
+	inputGates.insert(pair<string, LogicGateBase*>(gateAndName,			gateAnd));
+	inputGates.insert(pair<string, LogicGateBase*>(gateOrName,			gateOr));
+	inputGates.insert(pair<string, LogicGateBase*>(gateRegisterName,	gateRegister));
+	inputGates.insert(pair<string, LogicGateBase*>(outputAName,			outputA));
 
 	inputA->affectOutputValues(tempVectorA);
 	inputB->affectOutputValues(tempVectorB);
-
 	inputC->affectOutputValues(tempVectorC);
+	*/
 
+	//inputGates.insert(pair<string, LogicGateBase*>(gateNameTab[i], new LogicGateInput(gateNameTab[i])));
+	//dynamic_cast<LogicGateInput*>(inputGates.find(gateNameTab[i])->second)->affectOutputValues(inputGraphJSON.find(gateNameTab[i])->second);
+
+	dynamic_cast<LogicGateAnd*>(inputGates.find(gateAndName)->second)		->addInputNode(inputAName, inputGates.find(inputAName)->second);
+	dynamic_cast<LogicGateAnd*>(inputGates.find(gateAndName)->second)		->addInputNode(inputBName, inputGates.find(inputBName)->second);
+
+	dynamic_cast<LogicGateAnd*>(inputGates.find(gateOrName)->second)		->addInputNode(gateAndName, inputGates.find(gateAndName)->second);
+	dynamic_cast<LogicGateAnd*>(inputGates.find(gateOrName)->second)		->addInputNode(inputCName, inputGates.find(inputCName)->second);
+
+	dynamic_cast<LogicGateAnd*>(inputGates.find(gateRegisterName)->second)	->addInputNode(gateOrName, inputGates.find(gateOrName)->second);
+
+	dynamic_cast<LogicGateAnd*>(inputGates.find(outputAName)->second)		->addInputNode(gateRegisterName, inputGates.find(gateRegisterName)->second);
+
+	/*
 	gateAnd->addInputNode(inputAName, inputA);
 	gateAnd->addInputNode(inputBName, inputB);
 
@@ -630,19 +695,10 @@ bool unitTest_startSimulation() {
 
 	gateRegister->addInputNode(gateOrName, gateOr);
 
-	//outputA->addInputNode(gateRegisterName, gateRegister
-	outputA->addInputNode(gateOrName, gateOr);
+	outputA->addInputNode(gateRegisterName, gateRegister);
+	*/
 
-
-	map<string, LogicGateBase*> inputGates;
-
-
-	inputGates.insert(pair<string, LogicGateBase*>(inputAName,	inputA));
-	inputGates.insert(pair<string, LogicGateBase*>(inputBName,	inputB));
-	inputGates.insert(pair<string, LogicGateBase*>(gateAndName, gateAnd));
-	inputGates.insert(pair<string, LogicGateBase*>(gateOrName,	gateOr));
-	inputGates.insert(pair<string, LogicGateBase*>(gateRegisterName,	gateRegister));
-	inputGates.insert(pair<string, LogicGateBase*>(outputAName, outputA));
+		// Circuit part -------------------------------------------------------
 
 	string circuitName = "Circuit_name";
 	LogicCircuit* circuit = new LogicCircuit(inputGates, circuitName);
@@ -662,7 +718,6 @@ bool unitTest_startSimulation() {
 		return false;*/
 	return true;
 }
-
 
 
 	/// Launcher ----------------------------------------------------------------------------------
@@ -688,6 +743,8 @@ void unitTestingLauncher() {
 	if (unitTest_parserInputTokenListJSON()) { printErrorMessage("Error during the test of \"unitTest_parserInputTokenListJSON()\""); errorNumber++; }
 	else printInfoMessage("OK with the test of \"unitTest_parserInputTokenListJSON()\"");	*/
 	
+	LogicCircuit* circuit;// = new LogicCircuit(inputGates, circuitName);
+
 	if (unitTest_startSimulation()) { printErrorMessage("Error during the test of \"unitTest_startSimulation()\""); errorNumber++; }
 	else printInfoMessage("OK with the test of \"unitTest_startSimulation()\"");
 

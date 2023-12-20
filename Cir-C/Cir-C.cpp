@@ -55,12 +55,12 @@ int main(int argc, char* argv[])
 
         /// Parser processing ---------------------------------------------------------------------
                         
-    //map<string, vector<LogicState>> graphJSON;       
+    map<string, vector<LogicState>> graphJSON;       
     //parserInputTokenListJSON(listTokenJSON, graphJSON);
-    //printInConsoleMapWave("Print outputGraph:", graphJSON);   
-                  
+    //printInConsoleMapWave("Print outputGraph:", graphJSON);
 
-
+    map<string,LogicGateBase*> graphDOT;       
+    //parserInputTokenListDOT(listTokenDOT, graphDOT);    
 
         /// End of the program --------------------------------------------------------------------
 
