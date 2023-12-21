@@ -276,9 +276,6 @@ GateType ConvertStringToGateType(string type) {
 
 bool parserInputTokenListDOT(list<Token>& listToken, map<string, LogicGateBase*>& outputGraphDOT) {
     auto itListToken = listToken.begin();
-    bool endWhileFlag = false;
-    list<Token> subListToken;
-    int tempCounter = 0;
     string circuitName = "";
     string name = "";
     GateType type = NOTYPE ;
