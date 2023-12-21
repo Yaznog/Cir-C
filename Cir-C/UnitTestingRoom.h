@@ -577,7 +577,7 @@ bool unitTest_startSimulation() {
 	tempVectorA.push_back(LogicState::H);
 	tempVectorA.push_back(LogicState::H);
 	tempVectorA.push_back(LogicState::H);
-	inputGraphJSON.insert(pair<string, vector<LogicState>>("inputAName", tempVectorA));
+	inputGraphJSON.insert(pair<string, vector<LogicState>>(inputAName, tempVectorA));
 
 	vector<LogicState> tempVectorB;
 	tempVectorB.push_back(LogicState::X);
@@ -589,7 +589,7 @@ bool unitTest_startSimulation() {
 	tempVectorB.push_back(LogicState::L);
 	tempVectorB.push_back(LogicState::H);
 	tempVectorB.push_back(LogicState::H);
-	inputGraphJSON.insert(pair<string, vector<LogicState>>("inputBName", tempVectorB));
+	inputGraphJSON.insert(pair<string, vector<LogicState>>(inputBName, tempVectorB));
 	
 	vector<LogicState> tempVectorC;
 	tempVectorC.push_back(LogicState::X);
@@ -601,27 +601,30 @@ bool unitTest_startSimulation() {
 	tempVectorC.push_back(LogicState::L);
 	tempVectorC.push_back(LogicState::H);
 	tempVectorC.push_back(LogicState::L);
-	inputGraphJSON.insert(pair<string, vector<LogicState>>("inputCName", tempVectorC));
+	inputGraphJSON.insert(pair<string, vector<LogicState>>(inputCName, tempVectorC));
 	
 	printInConsoleMapWave("Print input waves:", inputGraphJSON);
 
 		// DOT input part -----------------------------------------------------
 		
-	string gateAndName				= "And_name";
-	string gateOrName				= "Or_name";
-	string gateRegisterName			= "Register_name";
-	string outputAName				= "OutputA_name";
+	string gateAndName			= "And_name";
+	string gateOrName			= "Or_name";
+	string gateRegisterName		= "Register_name";
+	string outputAName			= "OutputA_name";
 
 	const int gateTabLength = 7;
 	string gateNameTab[gateTabLength] = { inputAName, inputBName , inputCName , gateAndName, gateOrName, gateRegisterName, outputAName };
 	GateType gateTypeTab[gateTabLength] = { INPUT, INPUT , INPUT , AND, OR, REGISTER, OUTPUT};
 	map<string, LogicGateBase*> inputGates;
 
+	map<string, vector<LogicState>>::iterator itInputGraphJSON;
+	
 	for (int i = 0; i < gateTabLength; i++) {
 		switch (gateTypeTab[i]) {
 		case INPUT:
 			inputGates.insert(pair<string, LogicGateBase*>(gateNameTab[i], new LogicGateInput(gateNameTab[i])));
-			dynamic_cast<LogicGateInput*>(inputGates.find(gateNameTab[i])->second)->affectOutputValues(inputGraphJSON.find(gateNameTab[i])->second);
+			if ((itInputGraphJSON = inputGraphJSON.find(gateNameTab[i])) == inputGraphJSON.end()) printErrorMessage("Can not find the element \"" + gateNameTab[i] + "\" inside of inputGraphJSON");
+			else dynamic_cast<LogicGateInput*>	(inputGates.find(gateNameTab[i])->second)->affectOutputValues(itInputGraphJSON->second);
 			break;
 
 		case OUTPUT:
@@ -650,64 +653,34 @@ bool unitTest_startSimulation() {
 		}
 	}
 
-	//inputGraphJSON.find(gateNameTab[i])
-	/*
-	LogicGateInput* inputA			= new LogicGateInput(inputAName);
-	LogicGateInput* inputB			= new LogicGateInput(inputBName);
-	LogicGateInput* inputC			= new LogicGateInput(inputCName);	
-	LogicGateAnd* gateAnd			= new LogicGateAnd(gateAndName);	
-	LogicGateOr* gateOr				= new LogicGateOr(gateOrName);	
-	LogicGateRegister* gateRegister	= new LogicGateRegister(gateRegisterName);	
-	LogicGateOutput* outputA		= new LogicGateOutput(outputAName);*/
+	dynamic_cast<LogicGateAnd*>(inputGates.find(gateAndName)->second)			->addInputNode(inputAName,			inputGates.find(inputAName)->second);
+	dynamic_cast<LogicGateAnd*>(inputGates.find(gateAndName)->second)			->addInputNode(inputBName,			inputGates.find(inputBName)->second);
+
+	dynamic_cast<LogicGateOr*>(inputGates.find(gateOrName)->second)				->addInputNode(gateAndName,			inputGates.find(gateAndName)->second);
+	dynamic_cast<LogicGateOr*>(inputGates.find(gateOrName)->second)				->addInputNode(inputCName,			inputGates.find(inputCName)->second);
+
+	dynamic_cast<LogicGateRegister*>(inputGates.find(gateRegisterName)->second)	->addInputNode(gateOrName,			inputGates.find(gateOrName)->second);
+
+	dynamic_cast<LogicGateOutput*>(inputGates.find(outputAName)->second)		->addInputNode(gateRegisterName,	inputGates.find(gateRegisterName)->second);
 	
-	/*
-	inputGates.insert(pair<string, LogicGateBase*>(inputAName,			inputA));
-	inputGates.insert(pair<string, LogicGateBase*>(inputBName,			inputB));
-	inputGates.insert(pair<string, LogicGateBase*>(gateAndName,			gateAnd));
-	inputGates.insert(pair<string, LogicGateBase*>(gateOrName,			gateOr));
-	inputGates.insert(pair<string, LogicGateBase*>(gateRegisterName,	gateRegister));
-	inputGates.insert(pair<string, LogicGateBase*>(outputAName,			outputA));
-
-	inputA->affectOutputValues(tempVectorA);
-	inputB->affectOutputValues(tempVectorB);
-	inputC->affectOutputValues(tempVectorC);
-	*/
-
-	//inputGates.insert(pair<string, LogicGateBase*>(gateNameTab[i], new LogicGateInput(gateNameTab[i])));
-	//dynamic_cast<LogicGateInput*>(inputGates.find(gateNameTab[i])->second)->affectOutputValues(inputGraphJSON.find(gateNameTab[i])->second);
-
-	dynamic_cast<LogicGateAnd*>(inputGates.find(gateAndName)->second)		->addInputNode(inputAName, inputGates.find(inputAName)->second);
-	dynamic_cast<LogicGateAnd*>(inputGates.find(gateAndName)->second)		->addInputNode(inputBName, inputGates.find(inputBName)->second);
-
-	dynamic_cast<LogicGateAnd*>(inputGates.find(gateOrName)->second)		->addInputNode(gateAndName, inputGates.find(gateAndName)->second);
-	dynamic_cast<LogicGateAnd*>(inputGates.find(gateOrName)->second)		->addInputNode(inputCName, inputGates.find(inputCName)->second);
-
-	dynamic_cast<LogicGateAnd*>(inputGates.find(gateRegisterName)->second)	->addInputNode(gateOrName, inputGates.find(gateOrName)->second);
-
-	dynamic_cast<LogicGateAnd*>(inputGates.find(outputAName)->second)		->addInputNode(gateRegisterName, inputGates.find(gateRegisterName)->second);
-
-	/*
-	gateAnd->addInputNode(inputAName, inputA);
-	gateAnd->addInputNode(inputBName, inputB);
-
-	gateOr->addInputNode(inputCName, inputC);
-	gateOr->addInputNode(gateAndName, gateAnd);
-
-	gateRegister->addInputNode(gateOrName, gateOr);
-
-	outputA->addInputNode(gateRegisterName, gateRegister);
-	*/
-
 		// Circuit part -------------------------------------------------------
 
 	string circuitName = "Circuit_name";
 	LogicCircuit* circuit = new LogicCircuit(inputGates, circuitName);
 
-	printInConsoleLogicStateVector("Print wave of \"" + inputAName + "\"", tempVectorA);
-	printInConsoleLogicStateVector("Print wave of \"" + inputBName + "\"", tempVectorB);
-	printInConsoleLogicStateVector("Print wave of \"" + inputCName + "\"", tempVectorC);
+	//printInConsoleLogicStateVector("Print wave of \"" + inputAName + "\"", dynamic_cast<LogicGateInput*>(inputGates.find(inputAName)->second)->getAllOutput());
+	//printInConsoleLogicStateVector("Print wave of \"" + inputBName + "\"", dynamic_cast<LogicGateInput*>(inputGates.find(inputBName)->second)->getAllOutput());
+	//printInConsoleLogicStateVector("Print wave of \"" + inputCName + "\"", dynamic_cast<LogicGateInput*>(inputGates.find(inputCName)->second)->getAllOutput());
 
 	circuit->startSimulation();
+
+	map<string, vector<LogicState>> outputGraphJSON;
+	for (auto element : inputGates) {
+		if (dynamic_cast<const LogicGateOutput*>(element.second) != nullptr) {
+			outputGraphJSON.insert(pair<string, vector<LogicState>>{element.first, element.second->getAllOutput()});
+		}
+	}
+	printInConsoleMapWave("Print output waves:", outputGraphJSON);
 
 	/*
 	if (expectedOutputGraph != outputGraph) {

@@ -60,7 +60,7 @@ int main(int argc, char* argv[])
     //printInConsoleMapWave("Print outputGraph:", graphJSON);
 
     map<string,LogicGateBase*> graphDOT;       
-    //parserInputTokenListDOT(listTokenDOT, graphDOT);    
+    //parserInputTokenListDOT(listTokenDOT, graphDOT);
 
         /// End of the program --------------------------------------------------------------------
 
