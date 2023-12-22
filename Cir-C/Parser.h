@@ -14,6 +14,7 @@
 using namespace std;
 
 const int nbTypes = 10;
+const unsigned int maxStringLength = 30;
 
 enum class GateType {
     INPUT,
@@ -322,7 +323,7 @@ GateType ConvertStringToGateType(string type) {
     if (type.substr(0, 3) == "\"OR") return GateType::OR;
     if (type.substr(0, 4) == "\"XOR") return GateType::XOR;
     if (type.substr(0, 4) == "\"NOT") return GateType::NOT;
-    if (type == "\"REGISTER\"") return GateType::REGISTER;
+    if (type == "\"FF\"") return GateType::REGISTER;
     return GateType::NOTYPE;
 };
 
@@ -336,6 +337,7 @@ bool parserInputTokenListDOT(list<Token>& listToken, map<string, LogicGateBase*>
     GateType currentType = GateType::NOTYPE;
     map<string, LogicGateBase*>::iterator itGraphDOT;
 
+    if (listToken.size() == 0) { printErrorMessage("Input list of token is empty"); return true; }
 
         /// Tant que c'est un commentaire, on passe au token suivant
     while ((*itListToken).getType() == COMMENT) itListToken++;
@@ -347,7 +349,7 @@ bool parserInputTokenListDOT(list<Token>& listToken, map<string, LogicGateBase*>
 
         /// Si le digraph a un nom, on l'enregistre puis on passe à la suite
     if ((*itListToken).getType() == SYMBOLE) {
-        if ((*itListToken).getValue().length() >= 10) { printErrorMessage("In DOT parser, line " + to_string((*itListToken).getLine()) + ", digraph name too long"); return true; }
+        if ((*itListToken).getValue().length() >= maxStringLength) { printWarningMessage("In DOT parser, line " + to_string((*itListToken).getLine()) + ", digraph name too long"); return true; }
         circuitName = (*itListToken).getValue();
         itListToken++;
     }
@@ -380,7 +382,7 @@ bool parserInputTokenListDOT(list<Token>& listToken, map<string, LogicGateBase*>
         }
         else if ((*itListToken).getType() == SYMBOLE) { 
             //printErrorMessage("In DOT parser, line " + to_string((*itListToken).getLine()) + ", " + (*itListToken).getValue() + " need to be a SYMBOL"); return true; 
-            if ((*itListToken).getValue().length() >= 10) { printErrorMessage("In DOT parser, line " + to_string((*itListToken).getLine()) + ", node name too long"); return true; }
+            if ((*itListToken).getValue().length() >= maxStringLength) { printWarningMessage("In DOT parser, line " + to_string((*itListToken).getLine()) + ", node name too long"); return true; }
             currentName = (*itListToken).getValue();
 
             itListToken++;
@@ -388,7 +390,7 @@ bool parserInputTokenListDOT(list<Token>& listToken, map<string, LogicGateBase*>
 
             /// RIGHTSQUARE part ------------------------------------------------------------------
             if ((*itListToken).getType() == LEFTSQUARE) {
-                if (outputGraphDOT.count(currentName) != 0) { printErrorMessage("In DOT parser, line " + to_string((*itListToken).getLine()) + ", symbole \"" + (*itListToken).getValue() + "\" is already defined"); return true; }
+                if (outputGraphDOT.count(currentName) != 0) { printErrorMessage("In DOT parser, line " + to_string((*itListToken).getLine()) + ", symbole \"" + currentName + "\" is already defined"); return true; }
 
                 currentType = GateType::NOTYPE;
 
@@ -416,8 +418,8 @@ bool parserInputTokenListDOT(list<Token>& listToken, map<string, LogicGateBase*>
                 }
 
                 itListToken++;
-                if (itListToken == listToken.end()) { printErrorMessage("In DOT parser, line " + to_string((*itListToken).getLine()) + ", " + " need a SEMICOLON"); return true; }
-                if ((*itListToken).getType() != SEMICOLON) { printErrorMessage("In DOT parser, line " + to_string((*itListToken).getLine()) + ", " + " need a SEMICOLON"); return true; }
+                if (itListToken == listToken.end()) { printErrorMessage("In DOT parser, line " + to_string((*itListToken).getLine()) + ", need a SEMICOLON"); return true; }
+                if ((*itListToken).getType() != SEMICOLON) { printErrorMessage("In DOT parser, line " + to_string((*itListToken).getLine()) + ", need a SEMICOLON"); return true; }
 
 
                 /// Create a gate depending of his type and insert it in outputGraphDOT
@@ -437,7 +439,7 @@ bool parserInputTokenListDOT(list<Token>& listToken, map<string, LogicGateBase*>
                 case GateType::REGISTER:
                     outputGraphDOT.insert(pair<string, LogicGateBase*>(currentName, new LogicGateRegister(currentName))); break;
                 default:
-                    printErrorMessage("In DOT parser, line " + to_string((*itListToken).getLine()) + ", " + " need a label"); return true;
+                    printErrorMessage("In DOT parser, line " + to_string((*itListToken).getLine()) + ", need a label"); return true;
                 }
                 
                 itListToken++;

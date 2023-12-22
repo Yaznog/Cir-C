@@ -18,6 +18,7 @@ using namespace std;
 const string listOfArgsInputFilePathJSON[4] =   { "-j", "-J", "--inputjson",    "--INPUTJSON" };
 const string listOfArgsInputFilePathDOT[4] =    { "-d", "-D", "--inputdot",     "--INPUTDOT" };
 const string listOfArgsOutputFilePathJSON[4] =  { "-o", "-O", "--outputjson",   "--OUTPUTJSON" };
+//const string listOfArgsPrint[4] =               { "-p", "-P", "--print",        "--PRINT" };
 const string listOfArgsHelp[4] =                { "-h", "-H", "--help",         "--HELP" };
 
 int inputArgumentParser(int argc, char* argv[], string& inputFilePathJSON, string& inputFilePathDOT, string& outputFilePathJSON) {
