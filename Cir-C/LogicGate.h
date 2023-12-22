@@ -34,7 +34,7 @@ LogicState operator&(const LogicState& inputA, const LogicState& inputB) {
 LogicState operator|(const LogicState& inputA, const LogicState& inputB) {
     if ((inputA == LogicState::X) || (inputA == LogicState::Z) || (inputB == LogicState::X) || (inputB == LogicState::Z))
         return LogicState::X;
-    if((inputA == LogicState::H) || (inputB == LogicState::H))
+    if ((inputA == LogicState::H) || (inputB == LogicState::H))
         return LogicState::H;
     else return LogicState::L;
 }
@@ -42,7 +42,7 @@ LogicState operator|(const LogicState& inputA, const LogicState& inputB) {
 LogicState operator^(const LogicState& inputA, const LogicState& inputB) {
     if ((inputA == LogicState::X) || (inputA == LogicState::Z) || (inputB == LogicState::X) || (inputB == LogicState::Z))
         return LogicState::X;
-    if((inputA == LogicState::H) != (inputB == LogicState::H))
+    if ((inputA == LogicState::H) != (inputB == LogicState::H))
         return LogicState::H;
     else return LogicState::L;
 }
@@ -50,7 +50,7 @@ LogicState operator^(const LogicState& inputA, const LogicState& inputB) {
 LogicState operator~(const LogicState& inputA) {
     if ((inputA == LogicState::X) || (inputA == LogicState::Z))
         return LogicState::X;
-    if(inputA == LogicState::H)
+    if (inputA == LogicState::H)
         return LogicState::L;
     else return LogicState::H;
 }
@@ -69,18 +69,25 @@ string convertLogicStateToString(LogicState inputLogicState) {
     return "U";
 }
 
+string vectorLogicStateToString(vector<LogicState> inputVector) {
+    string outputString = "";
+    for (auto listElement : inputVector)
+        outputString += convertLogicStateToString(listElement);
+    return outputString;
+}
+
 
 class LogicGateBase {
 
 public:
 
-    LogicGateBase(const string& inputName) : m_name(inputName) {}; 
+    LogicGateBase(const string& inputName) : m_name(inputName) {};
 
-    inline const string getName()                   const   { return this->m_name; };
-    const vector<LogicState>& getAllOutput()        const   { return this->m_outputValues; };
-    inline const LogicState& getLastOutput()        const   { return this->m_outputValues.back(); };
+    inline const string getName()                   const { return this->m_name; };
+    const vector<LogicState>& getAllOutput()        const { return this->m_outputValues; };
+    inline const LogicState& getLastOutput()        const { return this->m_outputValues.back(); };
 
-    void setSizeOfOutputValues(unsigned int size)    { 
+    void setSizeOfOutputValues(unsigned int size) {
         unsigned int previousSize = getSizeOfOutputValues();
         this->m_outputValues.resize(size);
         if (size > previousSize) {
@@ -88,17 +95,17 @@ public:
                 m_outputValues[index] = m_outputValues[index - 1];
             }
         }
-        
+
     };
-    inline unsigned int getSizeOfOutputValues()     const   { return (unsigned int)this->m_outputValues.size(); };
+    inline unsigned int getSizeOfOutputValues()     const { return (unsigned int)this->m_outputValues.size(); };
 
     virtual inline string toString() = 0;
-           
-    virtual LogicState computeOutput(unsigned int index) = 0;    
+
+    virtual LogicState computeOutput(unsigned int index) = 0;
 
 protected:
 
-    const string        m_name;    
+    const string        m_name;
     vector<LogicState>  m_outputValues = { LogicState::X };
     unsigned int        m_deltaCycleCounter = 0;
     unsigned int        m_lastComputedIndex = 0;

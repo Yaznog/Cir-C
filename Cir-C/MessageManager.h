@@ -3,8 +3,6 @@
 
 #include <iostream>
 #include <string>
-#include <chrono>
-#include <ctime>
 #include <list>
 #include <iomanip>
 #include <map>
@@ -29,10 +27,8 @@ using namespace std;
 
 
 void printInConsoleStartUpMessage() {
-    time_t startTime = chrono::system_clock::to_time_t(chrono::system_clock::now());
     cout << BOLD << "################################################################################" << RESET << endl;
     cout << BOLD << "Welcome to Cir-C simulator !!!" << RESET << endl;
-    cout << BOLD << ctime(&startTime) << RESET << endl;
 }
 
 
@@ -67,14 +63,6 @@ void printInConsoleListToken(const string& startMessage, const list<Token>& inpu
     for (auto listElement : inputListToken)
         cout << left << "Value: \"" << setw(35) << (listElement.getValue() + "\"") << left << "Type: " << setw(15) << listElement.getTypeString() << left << "Line: " << setw(5) << to_string(listElement.getLine()) << endl << "---------------------------------------------------------------------------" << endl;
     cout << endl;
-}
-
-
-string vectorLogicStateToString(vector<LogicState> inputVector) {
-    string outputString = "";
-    for (auto listElement : inputVector)
-        outputString += convertLogicStateToString(listElement);
-    return outputString;
 }
 
 

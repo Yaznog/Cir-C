@@ -11,39 +11,8 @@
 
 using namespace std;
 
-/*
-void separateStringBySeparator(const string& separator, const string& inputString, list<Token>& splittedElementTab) {
-    size_t pos;
-    string input = inputString;
-    string subInput = "";
-        
-    tokenType currentTokenType = UNKNOWN;
-    string currentTokenValue = "";
-    int currentTokenLine = -1;
-    Token currentToken(currentTokenType, currentTokenValue, currentTokenLine);
 
-    while (!input.empty()) {
-        pos = input.find(separator);
-
-        if (pos == string::npos) {
-            subInput = input;
-            break;
-        }
-        subInput = input.substr(0, pos);
-        input = input.substr(pos + 1);
-
-        currentTokenType = Token::getStringType(subInput);
-
-        currentToken.setType(currentTokenType);
-        currentToken.setValue(currentTokenValue);
-        currentToken.setLine(currentTokenLine);
-
-        splittedElementTab.push_back(currentToken);
-    }
-}*/
-
-
-tokenType getStringTypeDOT(const string& inputString) {
+TokenType getStringTypeDOT(const string& inputString) {
 
     if (inputString.length() == 1) {
         switch (inputString[0]) {
@@ -98,7 +67,7 @@ tokenType getStringTypeDOT(const string& inputString) {
 }
 
 
-tokenType getStringTypeJSON(const string& inputString) {
+TokenType getStringTypeJSON(const string& inputString) {
 
     if (inputString.length() == 1) {
         switch (inputString[0]) {

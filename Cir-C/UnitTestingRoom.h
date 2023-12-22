@@ -603,8 +603,6 @@ bool unitTest_startSimulation() {
 	tempVectorC.push_back(LogicState::L);
 	inputGraphJSON.insert(pair<string, vector<LogicState>>(inputCName, tempVectorC));
 	
-	printInConsoleMapWave("Print input waves:", inputGraphJSON);
-
 		// DOT input part -----------------------------------------------------
 		
 	string gateAndName			= "And_name";
@@ -614,42 +612,31 @@ bool unitTest_startSimulation() {
 
 	const int gateTabLength = 7;
 	string gateNameTab[gateTabLength] = { inputAName, inputBName , inputCName , gateAndName, gateOrName, gateRegisterName, outputAName };
-	GateType gateTypeTab[gateTabLength] = { INPUT, INPUT , INPUT , AND, OR, REGISTER, OUTPUT};
+	GateType gateTypeTab[gateTabLength] = { GateType::INPUT, GateType::INPUT , GateType::INPUT , GateType::AND, GateType::OR, GateType::REGISTER, GateType::OUTPUT};
 	map<string, LogicGateBase*> inputGates;
-
+	
 	map<string, vector<LogicState>>::iterator itInputGraphJSON;
 	
 	for (int i = 0; i < gateTabLength; i++) {
 		switch (gateTypeTab[i]) {
-		case INPUT:
+		case GateType::INPUT:
 			inputGates.insert(pair<string, LogicGateBase*>(gateNameTab[i], new LogicGateInput(gateNameTab[i])));
 			if ((itInputGraphJSON = inputGraphJSON.find(gateNameTab[i])) == inputGraphJSON.end()) printErrorMessage("Can not find the element \"" + gateNameTab[i] + "\" inside of inputGraphJSON");
 			else dynamic_cast<LogicGateInput*>	(inputGates.find(gateNameTab[i])->second)->affectOutputValues(itInputGraphJSON->second);
 			break;
 
-		case OUTPUT:
-			inputGates.insert(pair<string, LogicGateBase*>(gateNameTab[i], new LogicGateOutput(gateNameTab[i])));
-			break;
-
-		case AND:
-			inputGates.insert(pair<string, LogicGateBase*>(gateNameTab[i], new LogicGateAnd(gateNameTab[i])));
-			break;
-
-		case OR:
-			inputGates.insert(pair<string, LogicGateBase*>(gateNameTab[i], new LogicGateOr(gateNameTab[i])));
-			break;
-
-		case XOR:
-			inputGates.insert(pair<string, LogicGateBase*>(gateNameTab[i], new LogicGateXor(gateNameTab[i])));
-			break;
-
-		case NOT:
-			inputGates.insert(pair<string, LogicGateBase*>(gateNameTab[i], new LogicGateNot(gateNameTab[i])));
-			break;
-
-		case REGISTER:
-			inputGates.insert(pair<string, LogicGateBase*>(gateNameTab[i], new LogicGateRegister(gateNameTab[i])));
-			break;
+		case GateType::OUTPUT:
+			inputGates.insert(pair<string, LogicGateBase*>(gateNameTab[i], new LogicGateOutput(gateNameTab[i])));	break;
+		case GateType::AND:
+			inputGates.insert(pair<string, LogicGateBase*>(gateNameTab[i], new LogicGateAnd(gateNameTab[i])));		break;
+		case GateType::OR:
+			inputGates.insert(pair<string, LogicGateBase*>(gateNameTab[i], new LogicGateOr(gateNameTab[i])));		break;
+		case GateType::XOR:
+			inputGates.insert(pair<string, LogicGateBase*>(gateNameTab[i], new LogicGateXor(gateNameTab[i])));		break;
+		case GateType::NOT:
+			inputGates.insert(pair<string, LogicGateBase*>(gateNameTab[i], new LogicGateNot(gateNameTab[i])));		break;
+		case GateType::REGISTER:
+			inputGates.insert(pair<string, LogicGateBase*>(gateNameTab[i], new LogicGateRegister(gateNameTab[i]))); break;
 		}
 	}
 
@@ -666,29 +653,37 @@ bool unitTest_startSimulation() {
 		// Circuit part -------------------------------------------------------
 
 	string circuitName = "Circuit_name";
-	LogicCircuit* circuit = new LogicCircuit(inputGates, circuitName);
+	LogicCircuit* circuit = new LogicCircuit(inputGates, inputGraphJSON, circuitName);
 
-	//printInConsoleLogicStateVector("Print wave of \"" + inputAName + "\"", dynamic_cast<LogicGateInput*>(inputGates.find(inputAName)->second)->getAllOutput());
-	//printInConsoleLogicStateVector("Print wave of \"" + inputBName + "\"", dynamic_cast<LogicGateInput*>(inputGates.find(inputBName)->second)->getAllOutput());
-	//printInConsoleLogicStateVector("Print wave of \"" + inputCName + "\"", dynamic_cast<LogicGateInput*>(inputGates.find(inputCName)->second)->getAllOutput());
+	circuit->startSimulation();	
 
-	circuit->startSimulation();
+	//circuit->printAllWaves();
+	//circuit->printInputWaves();
+	//circuit->printOutputWaves();
 
 	map<string, vector<LogicState>> outputGraphJSON;
-	for (auto element : inputGates) {
-		if (dynamic_cast<const LogicGateOutput*>(element.second) != nullptr) {
-			outputGraphJSON.insert(pair<string, vector<LogicState>>{element.first, element.second->getAllOutput()});
-		}
-	}
-	printInConsoleMapWave("Print output waves:", outputGraphJSON);
+	circuit->getOutputGraphJSON(outputGraphJSON);
 
-	/*
-	if (expectedOutputGraph != outputGraph) {
+	map<string, vector<LogicState>> expectedOutputGraphJSON;
+	vector<LogicState> tempVectorOutputA;
+	tempVectorOutputA.push_back(LogicState::X);
+	tempVectorOutputA.push_back(LogicState::X);
+	tempVectorOutputA.push_back(LogicState::L);
+	tempVectorOutputA.push_back(LogicState::L);
+	tempVectorOutputA.push_back(LogicState::L);
+	tempVectorOutputA.push_back(LogicState::H);
+	tempVectorOutputA.push_back(LogicState::L);
+	tempVectorOutputA.push_back(LogicState::L);
+	tempVectorOutputA.push_back(LogicState::H);
+	expectedOutputGraphJSON.insert(pair<string, vector<LogicState>>(outputAName, tempVectorOutputA));
+
+	
+	if (expectedOutputGraphJSON != outputGraphJSON) {
 		printInfoMessage("Output graphs are different");
 		return true;
 	}
 	else
-		return false;*/
+		return false;
 	return true;
 }
 
@@ -697,7 +692,7 @@ bool unitTest_startSimulation() {
 void unitTestingLauncher() {
 	unsigned int errorNumber = 0;
 	printInfoMessage("Unit test(s) are starting...\n");
-	/*
+	
 	if (unitTest_extractFile_DOT()) { printErrorMessage("Error during the test of \"unitTest_extractFile_DOT()\""); errorNumber++; }
 	else printInfoMessage("OK with the test of \"unitTest_extractFile_DOT()\"");
 
@@ -714,10 +709,8 @@ void unitTestingLauncher() {
 	else printInfoMessage("OK with the test of \"unitTest_parserInputTokenListDOT()\"");
 
 	if (unitTest_parserInputTokenListJSON()) { printErrorMessage("Error during the test of \"unitTest_parserInputTokenListJSON()\""); errorNumber++; }
-	else printInfoMessage("OK with the test of \"unitTest_parserInputTokenListJSON()\"");	*/
+	else printInfoMessage("OK with the test of \"unitTest_parserInputTokenListJSON()\"");
 	
-	LogicCircuit* circuit;// = new LogicCircuit(inputGates, circuitName);
-
 	if (unitTest_startSimulation()) { printErrorMessage("Error during the test of \"unitTest_startSimulation()\""); errorNumber++; }
 	else printInfoMessage("OK with the test of \"unitTest_startSimulation()\"");
 

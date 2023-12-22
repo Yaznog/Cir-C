@@ -2,21 +2,25 @@
 #define TOOLBOX_H
 
 #include "Token.h"
+//#include "LogicGate.h"
+//#include "Parser.h"
 
 #include <iostream>
 #include <fstream>
 #include <string>
 #include <list>
 #include <map>
+#include <vector>
 #include <algorithm>
 
 using namespace std;
 
-const string listOfArgsInputFilePathJSON[4] = { "-ij", "-IJ", "--inputjson", "--INPUTJSON" };
-const string listOfArgsInputFilePathDOT[4] = { "-id", "-ID", "--inputdot", "--INPUTDOT" };
-const string listOfArgsHelp[4] = { "-h", "-H", "--help", "--HELP" };
+const string listOfArgsInputFilePathJSON[4] =   { "-j", "-J", "--inputjson",    "--INPUTJSON" };
+const string listOfArgsInputFilePathDOT[4] =    { "-d", "-D", "--inputdot",     "--INPUTDOT" };
+const string listOfArgsOutputFilePathJSON[4] =  { "-o", "-O", "--outputjson",   "--OUTPUTJSON" };
+const string listOfArgsHelp[4] =                { "-h", "-H", "--help",         "--HELP" };
 
-int inputArgumentParser(int argc, char* argv[], string& inputFilePathJSON, string& inputFilePathDOT) {
+int inputArgumentParser(int argc, char* argv[], string& inputFilePathJSON, string& inputFilePathDOT, string& outputFilePathJSON) {
 
     //int rowsNb = sizeof(listOfInputArgs) / sizeof(listOfInputArgs[0]);
     //int colsNb = sizeof(listOfInputArgs[0]) / sizeof(listOfInputArgs[0][0]);
@@ -39,6 +43,15 @@ int inputArgumentParser(int argc, char* argv[], string& inputFilePathJSON, strin
             }
             else
                 cout << "ERROR: input JSON file path is missing after \"" << argv[i] << "\"" << endl;
+        }
+
+        else if (find(begin(listOfArgsOutputFilePathJSON), end(listOfArgsOutputFilePathJSON), argv[i]) != end(listOfArgsOutputFilePathJSON)) {
+            if (i + 1 != argc) {
+                outputFilePathJSON = argv[i + 1];
+                i++;
+            }
+            else
+                cout << "ERROR: output JSON file path is missing after \"" << argv[i] << "\"" << endl;
         }
 
         else if (find(begin(listOfArgsHelp), end(listOfArgsHelp), argv[i]) != end(listOfArgsHelp)) {
@@ -97,5 +110,8 @@ void cleanListOfToken(list<Token>& inputList) {
 
 inline unsigned int max(unsigned int inputValueA, unsigned int inputValueB) { return (inputValueA >= inputValueB) ? inputValueA : inputValueB; }
 inline int          max(int inputValueA, int inputValueB)                   { return (inputValueA >= inputValueB) ? inputValueA : inputValueB; }
+
+
+
 
 #endif

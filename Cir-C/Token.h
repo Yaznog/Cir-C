@@ -6,7 +6,7 @@
 
 using namespace std;
 
-enum tokenType {
+enum TokenType {
     LEFTPARENTHESIS,    // (
     RIGHTPARENTHESIS,   // )
     LEFTSQUARE,         // [
@@ -36,7 +36,7 @@ class Token {
 
 public:
 
-    Token(tokenType inputType = UNKNOWN, const string& inputValue = "void", unsigned int inputLine = 0) : m_type(inputType), m_value(inputValue), m_line(inputLine) {};
+    Token(TokenType inputType = UNKNOWN, const string& inputValue = "void", unsigned int inputLine = 0) : m_type(inputType), m_value(inputValue), m_line(inputLine) {};
 
     
     static string getStringType(const string& inputString) {
@@ -45,16 +45,16 @@ public:
 
     string toString() { return this->convertTokenTypeToString(this->m_type) + " " + this->m_value + " " + to_string(this->m_line); };
 
-    inline const tokenType getType() { return this->m_type; };
+    inline const TokenType getType() { return this->m_type; };
     inline const string getTypeString() { return this->convertTokenTypeToString(this->m_type); };
     inline const string getValue() { return this->m_value; };
     inline const unsigned int getLine() { return this->m_line; };
 
-    inline void setType(tokenType inputType) { this->m_type = inputType; };
+    inline void setType(TokenType inputType) { this->m_type = inputType; };
     inline void setValue(string inputValue) { this->m_value = inputValue; };
     inline void setLine(unsigned int inputLine) { this->m_line = inputLine; };
 
-    string convertTokenTypeToString(tokenType inputTokenType) {
+    string convertTokenTypeToString(TokenType inputTokenType) {
         switch (inputTokenType) {
         case 0:
             return "LEFTPARENTHESIS";
@@ -123,7 +123,7 @@ public:
 
 private:
 
-    tokenType m_type;
+    TokenType m_type;
     string m_value;
     unsigned int m_line;
     
